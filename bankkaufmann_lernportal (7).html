@@ -1,0 +1,3678 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏦 BFK3 Lernportal – Bankkaufmann 2. Lehrjahr</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap');
+
+  :root {
+    --navy: #0a1628;
+    --navy2: #0f2044;
+    --blue: #1a56db;
+    --blue-light: #3b82f6;
+    --gold: #f59e0b;
+    --gold-light: #fcd34d;
+    --green: #10b981;
+    --red: #ef4444;
+    --teal: #0d9488;
+    --purple: #7c3aed;
+    --pink: #ec4899;
+    --bg: #060e1f;
+    --surface: #0d1f3c;
+    --surface2: #142545;
+    --border: rgba(59,130,246,0.2);
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── STARFIELD ─── */
+  #stars {
+    position: fixed; inset:0; pointer-events:none; z-index:0;
+    background: radial-gradient(ellipse at 20% 50%, rgba(26,86,219,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(124,58,237,0.06) 0%, transparent 50%),
+                var(--bg);
+  }
+
+  /* ─── LAYOUT ─── */
+  .app { display:flex; min-height:100vh; position:relative; z-index:1; }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar {
+    width: 260px;
+    min-height: 100vh;
+    background: rgba(13,31,60,0.95);
+    border-right: 1px solid var(--border);
+    padding: 0;
+    position: fixed;
+    top:0; left:0; bottom:0;
+    display: flex;
+    flex-direction: column;
+    backdrop-filter: blur(20px);
+    z-index: 100;
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar-logo {
+    padding: 24px 20px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-logo .bank-icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .sidebar-logo h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .sidebar-logo p {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .sidebar-badge {
+    display: inline-block;
+    background: rgba(245,158,11,0.15);
+    border: 1px solid rgba(245,158,11,0.3);
+    color: var(--gold);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-top: 6px;
+    letter-spacing: 0.05em;
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    padding: 16px 0;
+    overflow-y: auto;
+  }
+
+  .nav-section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 12px 20px 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: all 0.2s;
+    font-size: 13.5px;
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+
+  .nav-item:hover {
+    background: rgba(59,130,246,0.08);
+    color: var(--text);
+    border-left-color: rgba(59,130,246,0.4);
+  }
+
+  .nav-item.active {
+    background: rgba(59,130,246,0.12);
+    color: var(--blue-light);
+    border-left-color: var(--blue-light);
+    font-weight: 500;
+  }
+
+  .nav-item .icon { font-size: 16px; width: 20px; text-align:center; }
+
+  .sidebar-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .progress-mini {
+    height: 4px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 2px;
+    margin-top: 8px;
+    overflow: hidden;
+  }
+
+  .progress-mini-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue), var(--purple));
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.6s ease;
+  }
+
+  /* ─── MAIN CONTENT ─── */
+  .main {
+    margin-left: 260px;
+    flex: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ─── TOPBAR ─── */
+  .topbar {
+    background: rgba(13,31,60,0.8);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top:0;
+    z-index: 50;
+  }
+
+  .topbar-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .xp-badge {
+    background: rgba(245,158,11,0.15);
+    border: 1px solid rgba(245,158,11,0.3);
+    color: var(--gold);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  /* ─── PAGES ─── */
+  .page { display: none; padding: 32px; }
+  .page.active { display: block; }
+
+  /* ─── HERO (Home) ─── */
+  .hero {
+    background: linear-gradient(135deg, rgba(26,86,219,0.15) 0%, rgba(124,58,237,0.1) 100%);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(26,86,219,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, #fff 0%, var(--gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    color: var(--text-muted);
+    font-size: 15px;
+    max-width: 500px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .hero-stat {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    text-align: center;
+  }
+
+  .hero-stat .val {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--gold);
+  }
+
+  .hero-stat .lbl {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* ─── CARDS GRID ─── */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent, rgba(255,255,255,0.02));
+    pointer-events: none;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: var(--blue-light);
+    box-shadow: 0 16px 40px rgba(26,86,219,0.2);
+  }
+
+  .card-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+
+  .card p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  .card-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-top: 12px;
+  }
+
+  /* ─── SECTION HEADERS ─── */
+  .section-header {
+    margin-bottom: 24px;
+  }
+
+  .section-header h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .section-header p {
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  /* ─── THEORY BLOCKS ─── */
+  .theory-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 20px;
+  }
+
+  .theory-block h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .theory-block p, .theory-block li {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.7;
+    margin-bottom: 8px;
+  }
+
+  .theory-block ul { padding-left: 20px; }
+
+  .formula-box {
+    background: rgba(26,86,219,0.1);
+    border: 1px solid rgba(26,86,219,0.3);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    color: var(--gold-light);
+    line-height: 1.8;
+  }
+
+  .formula-box .formula-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--blue-light);
+    margin-bottom: 8px;
+  }
+
+  .highlight-box {
+    background: rgba(16,185,129,0.08);
+    border-left: 3px solid var(--green);
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 13.5px;
+    color: var(--text);
+  }
+
+  .warning-box {
+    background: rgba(245,158,11,0.08);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 13.5px;
+    color: var(--text);
+  }
+
+  /* ─── SCHEMA VISUAL ─── */
+  .schema-container {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin: 20px 0;
+    overflow-x: auto;
+  }
+
+  .schema-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .schema-table th {
+    background: rgba(26,86,219,0.2);
+    color: var(--blue-light);
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 10px 14px;
+    text-align: left;
+    border: 1px solid var(--border);
+  }
+
+  .schema-table td {
+    padding: 9px 14px;
+    border: 1px solid rgba(255,255,255,0.06);
+    color: var(--text);
+    vertical-align: top;
+  }
+
+  .schema-table tr:hover td {
+    background: rgba(59,130,246,0.05);
+  }
+
+  .schema-table .result-row td {
+    background: rgba(16,185,129,0.08);
+    color: var(--green);
+    font-weight: 600;
+    border-top: 2px solid rgba(16,185,129,0.3);
+  }
+
+  .schema-table .subtotal-row td {
+    background: rgba(26,86,219,0.1);
+    color: var(--blue-light);
+    font-weight: 600;
+  }
+
+  .schema-table .minus { color: var(--red); }
+  .schema-table .plus { color: var(--green); }
+
+  /* ─── CALCULATOR ─── */
+  .calc-container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 24px;
+  }
+
+  .calc-container h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 20px;
+  }
+
+  .calc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .input-group label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .input-group input {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .input-group input:focus {
+    border-color: var(--blue-light);
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+  }
+
+  .btn {
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 24px;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.03em;
+  }
+
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(26,86,219,0.4);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--blue-light);
+    color: var(--blue-light);
+    box-shadow: none;
+  }
+
+  .result-display {
+    background: var(--surface2);
+    border: 1px solid rgba(16,185,129,0.3);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+    display: none;
+  }
+
+  .result-display.show { display: block; }
+
+  .result-display .result-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--green);
+    margin-bottom: 12px;
+  }
+
+  .result-row-calc {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 13.5px;
+  }
+
+  .result-row-calc:last-child { border-bottom: none; }
+  .result-row-calc .lbl { color: var(--text-muted); }
+  .result-row-calc .val { font-weight: 600; font-family: 'Courier New', monospace; }
+  .result-row-calc .val.good { color: var(--green); }
+  .result-row-calc .val.bad { color: var(--red); }
+  .result-row-calc .val.neutral { color: var(--gold); }
+
+  .big-result {
+    background: rgba(16,185,129,0.1);
+    border: 1px solid rgba(16,185,129,0.3);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .big-result .br-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .big-result .br-val {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--green);
+  }
+
+  /* ─── QUIZ ─── */
+  .quiz-container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 24px;
+  }
+
+  .quiz-question {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+
+  .quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .quiz-option {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+    color: var(--text);
+    text-align: left;
+  }
+
+  .quiz-option:hover {
+    border-color: var(--blue-light);
+    background: rgba(59,130,246,0.08);
+  }
+
+  .quiz-option.correct {
+    border-color: var(--green);
+    background: rgba(16,185,129,0.1);
+    color: var(--green);
+  }
+
+  .quiz-option.wrong {
+    border-color: var(--red);
+    background: rgba(239,68,68,0.1);
+    color: var(--red);
+  }
+
+  .quiz-feedback {
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-size: 13.5px;
+    margin-top: 12px;
+    display: none;
+    line-height: 1.6;
+  }
+
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.correct-fb { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); color: var(--green); }
+  .quiz-feedback.wrong-fb { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; }
+
+  .quiz-nav {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-top: 16px;
+  }
+
+  .quiz-progress-text {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-left: auto;
+  }
+
+  .quiz-score-board {
+    background: rgba(245,158,11,0.08);
+    border: 1px solid rgba(245,158,11,0.3);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .quiz-score-board .score-val {
+    font-family: 'Syne', sans-serif;
+    font-size: 48px;
+    font-weight: 800;
+    color: var(--gold);
+  }
+
+  /* ─── FLASHCARDS ─── */
+  .flashcard-scene {
+    width: 100%;
+    height: 220px;
+    perspective: 1200px;
+    cursor: pointer;
+    margin-bottom: 20px;
+  }
+
+  .flashcard-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .flashcard-scene.flipped .flashcard-inner {
+    transform: rotateY(180deg);
+  }
+
+  .flashcard-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .flashcard-front {
+    background: linear-gradient(135deg, var(--surface), var(--surface2));
+  }
+
+  .flashcard-back {
+    background: linear-gradient(135deg, rgba(26,86,219,0.15), rgba(124,58,237,0.12));
+    transform: rotateY(180deg);
+    border-color: rgba(59,130,246,0.3);
+  }
+
+  .flashcard-face .fc-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  .flashcard-face .fc-question {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.4;
+  }
+
+  .flashcard-face .fc-answer {
+    font-size: 14px;
+    color: var(--gold);
+    line-height: 1.6;
+    font-weight: 500;
+  }
+
+  .flashcard-hint {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+
+  .flashcard-nav {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* ─── SOLUTIONS PAGE ─── */
+  .solution-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+
+  .solution-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s;
+  }
+
+  .solution-header:hover {
+    background: rgba(59,130,246,0.06);
+  }
+
+  .solution-header h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .solution-toggle {
+    font-size: 18px;
+    color: var(--text-muted);
+    transition: transform 0.3s;
+  }
+
+  .solution-body {
+    display: none;
+    padding: 0 24px 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  .solution-body.open { display: block; }
+
+  .solution-toggle.open { transform: rotate(180deg); }
+
+  .step {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 16px;
+    padding-top: 16px;
+  }
+
+  .step-number {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 800;
+    color: #fff;
+  }
+
+  .step-content { flex: 1; }
+
+  .step-content .step-title {
+    font-weight: 600;
+    color: var(--text);
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+
+  .step-content .step-text {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .step-content .step-formula {
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    color: var(--gold-light);
+    background: rgba(0,0,0,0.2);
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-top: 6px;
+    line-height: 1.8;
+  }
+
+  .answer-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(16,185,129,0.12);
+    border: 1px solid rgba(16,185,129,0.3);
+    color: var(--green);
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    margin-top: 8px;
+  }
+
+  /* ─── RATING TABLE ─── */
+  .rating-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 12px;
+  }
+
+  .rating-table th {
+    background: rgba(26,86,219,0.2);
+    color: var(--blue-light);
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+  }
+
+  .rating-table td {
+    padding: 8px 12px;
+    border: 1px solid rgba(255,255,255,0.06);
+    color: var(--text);
+  }
+
+  .rating-table tr:nth-child(even) td {
+    background: rgba(255,255,255,0.02);
+  }
+
+  .risk-low { color: #34d399; }
+  .risk-mid { color: var(--gold); }
+  .risk-high { color: var(--red); }
+
+  /* ─── TABS ─── */
+  .tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+
+  .tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--text-muted);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .tab.active {
+    color: var(--blue-light);
+    border-bottom-color: var(--blue-light);
+  }
+
+  .tab:hover:not(.active) {
+    color: var(--text);
+  }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* ─── TOOLTIP ─── */
+  .tooltip-trigger {
+    border-bottom: 1px dashed var(--blue-light);
+    cursor: help;
+    color: var(--blue-light);
+  }
+
+  /* ─── KONZERN VISUAL ─── */
+  .konzern-tree {
+    background: var(--surface2);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    font-size: 13px;
+    margin: 16px 0;
+  }
+
+  .k-node {
+    display: inline-block;
+    background: rgba(26,86,219,0.2);
+    border: 1px solid rgba(26,86,219,0.4);
+    color: var(--blue-light);
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 8px;
+    margin: 4px;
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+  }
+
+  .k-node.root {
+    background: rgba(245,158,11,0.15);
+    border-color: rgba(245,158,11,0.4);
+    color: var(--gold);
+    font-size: 14px;
+  }
+
+  .k-percent {
+    font-size: 10px;
+    color: var(--text-muted);
+    display: block;
+  }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeSlideIn {
+    from { opacity:0; transform: translateY(16px); }
+    to { opacity:1; transform: translateY(0); }
+  }
+
+  .page.active > * {
+    animation: fadeSlideIn 0.35s ease forwards;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(26,86,219,0.3); }
+    50% { box-shadow: 0 0 0 8px rgba(26,86,219,0); }
+  }
+
+  .pulse { animation: pulse-glow 2s infinite; }
+
+  /* ─── MOBILE TOGGLE ─── */
+  .menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  @media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main { margin-left: 0; }
+    .menu-toggle { display: block; }
+    .calc-grid { grid-template-columns: 1fr; }
+    .hero h2 { font-size: 26px; }
+    .page { padding: 20px; }
+  }
+
+  /* ─── TAGS ─── */
+  .tag-blue { background: rgba(59,130,246,0.15); color: var(--blue-light); border: 1px solid rgba(59,130,246,0.3); }
+  .tag-gold { background: rgba(245,158,11,0.15); color: var(--gold); border: 1px solid rgba(245,158,11,0.3); }
+  .tag-green { background: rgba(16,185,129,0.15); color: var(--green); border: 1px solid rgba(16,185,129,0.3); }
+  .tag-red { background: rgba(239,68,68,0.15); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); }
+  .tag-purple { background: rgba(124,58,237,0.15); color: #a78bfa; border: 1px solid rgba(124,58,237,0.3); }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 24px 0;
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  @media (max-width: 900px) {
+    .two-col { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div id="stars"></div>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <span class="bank-icon">🏦</span>
+      <h1>BFK3 Lernportal</h1>
+      <p>Bankkaufmann · 2. Lehrjahr</p>
+      <span class="sidebar-badge">⚡ Prüfungsvorbereitung</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Übersicht</div>
+      <a class="nav-item active" onclick="showPage('home')">
+        <span class="icon">🏠</span> Startseite
+      </a>
+
+      <div class="nav-section-label">Lernfeld 11 – LF11-LS03</div>
+      <a class="nav-item" onclick="showPage('gesamtbetrieb')">
+        <span class="icon">📊</span> Gesamtbetriebskalkulation
+      </a>
+      <a class="nav-item" onclick="showPage('spannen')">
+        <span class="icon">📐</span> Spannen & Formeln
+      </a>
+      <a class="nav-item" onclick="showPage('rechner')">
+        <span class="icon">🧮</span> Interaktiver Rechner
+      </a>
+
+      <div class="nav-section-label">Lernfeld 11 – LF11-LS06</div>
+      <a class="nav-item" onclick="showPage('preisgrenzen')">
+        <span class="icon">💰</span> Preisgrenzen & Kalkulation
+      </a>
+      <a class="nav-item" onclick="showPage('deckungsbeitrag')">
+        <span class="icon">🔢</span> Deckungsbeitragsrechnung
+      </a>
+
+      <div class="nav-section-label">Weitere Themen</div>
+      <a class="nav-item" onclick="showPage('konzern')">
+        <span class="icon">🏢</span> Konzern & Holding
+      </a>
+      <a class="nav-item" onclick="showPage('nachfrage')">
+        <span class="icon">📈</span> Nachfrage & Elastizität
+      </a>
+      <a class="nav-item" onclick="showPage('boerse')">
+        <span class="icon">📉</span> Börse & Auktion
+      </a>
+
+      <div class="nav-section-label">Prüfung</div>
+      <a class="nav-item" onclick="showPage('rechenaufgaben')">
+        <span class="icon">🔥</span> Rechenaufgaben
+      </a>
+      <a class="nav-item" onclick="showPage('quiz')">
+        <span class="icon">❓</span> Quiz (50 Fragen)
+      </a>
+      <a class="nav-item" onclick="showPage('flashcards')">
+        <span class="icon">🃏</span> Karteikarten
+      </a>
+      <a class="nav-item" onclick="showPage('loesungen')" style="color: var(--gold)">
+        <span class="icon">✅</span> Lösungen
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div style="font-weight:600; color: var(--text); margin-bottom:4px;">Lernfortschritt</div>
+      <div style="font-size:11px; color: var(--text-muted);">Themen abgeschlossen</div>
+      <div class="progress-mini">
+        <div class="progress-mini-fill" id="mainProgress" style="width:0%"></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+        <span class="topbar-title" id="topbarTitle">Startseite</span>
+      </div>
+      <div class="topbar-right">
+        <span class="xp-badge">⭐ <span id="xpCount">0</span> XP</span>
+      </div>
+    </header>
+
+    <!-- ════════════════════════════════════════════════════ -->
+    <!-- PAGE: HOME -->
+    <!-- ════════════════════════════════════════════════════ -->
+    <div class="page active" id="page-home">
+      <div class="hero">
+        <h2>Willkommen zurück,<br>Auszubildender! 💪</h2>
+        <p>Dein persönliches Lernportal für die BFK3-Prüfung. Alle Inhalte aus deinen Unterlagen – interaktiv, übersichtlich und prüfungsreif aufbereitet.</p>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="val">2</div>
+            <div class="lbl">Lernfelder</div>
+          </div>
+          <div class="hero-stat">
+            <div class="val">8+</div>
+            <div class="lbl">Themen</div>
+          </div>
+          <div class="hero-stat">
+            <div class="val">30+</div>
+            <div class="lbl">Quiz-Fragen</div>
+          </div>
+          <div class="hero-stat">
+            <div class="val">100%</div>
+            <div class="lbl">Aus deinen PDFs</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <h2>📚 Lernbereiche</h2>
+        <p>Klicke auf einen Bereich um zu starten</p>
+      </div>
+
+      <div class="cards-grid">
+        <div class="card" onclick="showPage('gesamtbetrieb')">
+          <span class="card-icon">📊</span>
+          <h3>Gesamtbetriebskalkulation</h3>
+          <p>Schema der GBK, Periodenerfolg, Vergleich mit Branche. Rottweiler Bank AG Fallbeispiel.</p>
+          <span class="card-tag tag-blue">LF11-LS03</span>
+        </div>
+        <div class="card" onclick="showPage('spannen')">
+          <span class="card-icon">📐</span>
+          <h3>Spannen & Formeln</h3>
+          <p>Bruttozinsspanne, Provisionsspanne, Nettogewinnspanne, Verwaltungsaufwand.</p>
+          <span class="card-tag tag-gold">Formeln</span>
+        </div>
+        <div class="card" onclick="showPage('rechner')">
+          <span class="card-icon">🧮</span>
+          <h3>Interaktiver Rechner</h3>
+          <p>Berechne alle Spannen automatisch anhand eigener Eingaben. Mit Schritt-für-Schritt-Erklärung.</p>
+          <span class="card-tag tag-green">Interaktiv</span>
+        </div>
+        <div class="card" onclick="showPage('preisgrenzen')">
+          <span class="card-icon">💰</span>
+          <h3>Preisgrenzen & Kalkulation</h3>
+          <p>Preisunter- und Preisobergrenzen im Aktiv- und Passivgeschäft. Ratenkredite mit Rating.</p>
+          <span class="card-tag tag-blue">LF11-LS06</span>
+        </div>
+        <div class="card" onclick="showPage('deckungsbeitrag')">
+          <span class="card-icon">🔢</span>
+          <h3>Deckungsbeitragsrechnung</h3>
+          <p>Deckungsbeitrag I–IV, GKM-Satz, Eigenkapitalkosten, Kontokorrentkonto.</p>
+          <span class="card-tag tag-purple">Kalkulation</span>
+        </div>
+        <div class="card" onclick="showPage('konzern')">
+          <span class="card-icon">🏢</span>
+          <h3>Konzern & Holding</h3>
+          <p>Was ist ein Konzern? Arten, Holdingformen, Auswirkungen auf Wirtschaft & Markt.</p>
+          <span class="card-tag tag-gold">Projektkompetenz</span>
+        </div>
+        <div class="card" onclick="showPage('rechenaufgaben')" style="border-color: rgba(245,158,11,0.4)">
+          <span class="card-icon">🔥</span>
+          <h3>Rechenaufgaben</h3>
+          <p>10 Rechen-Aufgaben zum selbst Lösen mit sofortigem Feedback und Schritt-für-Schritt Lösungen.</p>
+          <span class="card-tag tag-gold">💪 Selbst rechnen</span>
+        </div>
+        <div class="card" onclick="showPage('quiz')">
+          <span class="card-icon">❓</span>
+          <h3>Quiz (50 Fragen)</h3>
+          <p>Teste dein Wissen mit 50 Fragen zu allen Themen – inkl. Rechen-Fragen. Mit Feedback und XP-System.</p>
+          <span class="card-tag tag-green">Prüfungstraining</span>
+        </div>
+        <div class="card" onclick="showPage('loesungen')" style="border-color: rgba(245,158,11,0.4)">
+          <span class="card-icon">✅</span>
+          <h3>Lösungsseite</h3>
+          <p>Alle Musterberechnungen aus deinen Unterlagen: Neckarbank, Rottweiler Bank, Nagoldbank.</p>
+          <span class="card-tag tag-gold">⭐ Wichtig</span>
+        </div>
+      </div>
+
+      <div class="warning-box">
+        💡 <strong>Tipp:</strong> Fang mit den Spannen-Formeln an – die kommen in fast jeder Aufgabe vor! Dann die GBK-Schema auswendig lernen.
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════ -->
+    <!-- PAGE: GESAMTBETRIEBSKALKULATION -->
+    <!-- ════════════════════════════════════════════════════ -->
+    <div class="page" id="page-gesamtbetrieb">
+      <div class="section-header">
+        <h2>📊 Gesamtbetriebskalkulation</h2>
+        <p>LF11-LS03 · Rottweiler Bank AG</p>
+      </div>
+
+      <div class="theory-block">
+        <h3>🎯 Was ist die Gesamtbetriebskalkulation?</h3>
+        <p>Die Gesamtbetriebskalkulation (GBK) ergibt sich aus der <strong>Gegenüberstellung aller angefallenen Kosten und Erlöse</strong> für einen festgelegten Abrechnungszeitraum.</p>
+        <div class="highlight-box">
+          📌 Da die GBK vielfach der erste Schritt der Kostenrechnung darstellt, wird sie auf Grundlage der Zahlen der GuV erstellt. Korrekturen sind erforderlich, sodass <strong>neutrale Aufwendungen und Erträge</strong> herausrechnet werden und <strong>Zusatzkosten</strong> hinzukommen.
+        </div>
+        <p>Das Endergebnis heißt <strong>Betriebsergebnis (BE)</strong>. Es ist der <strong>Periodenerfolg</strong> des Kreditinstituts.</p>
+      </div>
+
+      <div class="theory-block">
+        <h3>📋 Schema der Gesamtbetriebskalkulation</h3>
+        <p>Linke Seite: in EUR (absolut) · Rechte Seite: in % vom Geschäftsvolumen</p>
+
+        <div class="schema-container">
+          <table class="schema-table">
+            <tr>
+              <th>Position</th>
+              <th>in EUR</th>
+              <th>Spanne (% v. GV)</th>
+            </tr>
+            <tr>
+              <td>Zinsüberschuss (ZÜ)<br><small style="color:var(--text-muted)">= ZE + laufende Erträge aus Aktien &amp; Beteiligungen − ZA</small></td>
+              <td></td>
+              <td>→ Bruttozinsspanne (BZS)</td>
+            </tr>
+            <tr>
+              <td>+ Provisionsüberschuss (PrÜ)<br><small style="color:var(--text-muted)">= Provisionserträge − Provisionsaufwendungen</small></td>
+              <td></td>
+              <td>→ Provisionsspanne (PrS)</td>
+            </tr>
+            <tr>
+              <td>− Verwaltungsaufwand (VA)<br><small style="color:var(--text-muted)">= Personalaufwand + andere VA + Abschreibungen Sachanlagen</small></td>
+              <td></td>
+              <td>→ Bruttobedarfsspanne (BBS)</td>
+            </tr>
+            <tr class="subtotal-row">
+              <td>= Teilbetriebsergebnis (TBE)</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>+/− Nettoergebnis aus Finanzgeschäften (4)</td>
+              <td></td>
+              <td>→ Handelsergebnis</td>
+            </tr>
+            <tr>
+              <td>+/− Saldo der sonstigen betr. Erträge und Aufwendungen (5)</td>
+              <td></td>
+              <td>→ Sonstige Ertragsspanne</td>
+            </tr>
+            <tr>
+              <td>+/− Bewertungsergebnis / Risikovorsorge (6)</td>
+              <td></td>
+              <td>→ Bewertungsspanne</td>
+            </tr>
+            <tr class="result-row">
+              <td>= Betriebsergebnis aus normaler Geschäftstätigkeit<br><small>(Summe 1–6)</small></td>
+              <td></td>
+              <td>→ Nettogewinnspanne</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="warning-box">
+          💡 <strong>Merke:</strong> Das Geschäftsvolumen (GV) = Bilanzsumme + Eventualverbindlichkeiten. Die Spannen sind immer: Wert × 100 ÷ GV
+        </div>
+      </div>
+
+      <div class="theory-block">
+        <h3>🔄 Wofür braucht man die GBK?</h3>
+        <ul>
+          <li>Vergleich mit anderen Perioden (absolut in EUR)</li>
+          <li>Vergleich mit anderen KI über Branchenstatistiken (relativ in % = Spannen)</li>
+          <li>Erkennen von unerwünschten Entwicklungen</li>
+          <li>Einleiten von Gegenmaßnahmen</li>
+        </ul>
+        <div class="highlight-box">
+          🏦 Die <strong>Nettogewinnspanne</strong> = Betriebsergebnis in % des GV. Sie zeigt ob das KI unter Berücksichtigung der Risikodeckung seinen obersten Zweck erfüllt: die <strong>Erhaltung des Unternehmens</strong>.
+        </div>
+      </div>
+
+      <div class="theory-block">
+        <h3>📄 Situation: Rottweiler Bank AG (LF11-LS03)</h3>
+        <p>Als Azubi in der Abteilung KER hörst du einen Dialog mit, in dem die Abteilungsleiterin Rechnungswesen mit der DH-Studentin Susi Sorglos über die Ergebnisse des Jahresabschlusses spricht.</p>
+        <div class="warning-box">
+          ⚠️ Susi Sorglos meint, alles sei super. Die Abteilungsleiterin widerspricht: <em>„Das vergangene Jahr war deutlich schlechter als das vorherige."</em> – Der Jahresüberschuss allein sagt nicht alles! Wichtiger ist das <strong>Betriebsergebnis</strong>.
+        </div>
+        <p>Auftrag: GBK für Rottweiler Bank AG für das Geschäftsjahr UND Vorjahr erstellen + Bericht über Veränderungen.</p>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════ -->
+    <!-- PAGE: SPANNEN & FORMELN -->
+    <!-- ════════════════════════════════════════════════════ -->
+    <div class="page" id="page-spannen">
+      <div class="section-header">
+        <h2>📐 Spannen & Formeln</h2>
+        <p>Die wichtigsten Formeln – auswendig lernen!</p>
+      </div>
+
+      <div class="two-col">
+
+        <div class="theory-block">
+          <h3>📌 Zinsüberschuss (ZÜ)</h3>
+          <div class="formula-box">
+            <div class="formula-label">Formel</div>
+            ZÜ = ZE + laufende Erträge aus Aktien &amp; Beteiligungen − ZA
+          </div>
+          <p>ZE = Zinserträge aus Kredit- &amp; Geldmarktgeschäften + Zinserträge aus festverzinslichen WP &amp; Schuldbuchforderungen</p>
+        </div>
+
+        <div class="theory-block">
+          <h3>📌 Bruttozinsspanne (BZS)</h3>
+          <div class="formula-box">
+            <div class="formula-label">Formel</div>
+            BZS = ZÜ × 100 ÷ Geschäftsvolumen
+          </div>
+          <p>= Bilanzzinsspanne. Zeigt wie viel % des GV als Zinsüberschuss erwirtschaftet wurde.</p>
+        </div>
+
+        <div class="theory-block">
+          <h3>📌 Provisionsüberschuss (PrÜ)</h3>
+          <div class="formula-box">
+            <div class="formula-label">Formel</div>
+            PrÜ = Provisionserträge − Provisionsaufwendungen
+          </div>
+        </div>
+
+        <div class="theory-block">
+          <h3>📌 Provisionsspanne (PrS)</h3>
+          <div class="formula-box">
+            <div class="formula-label">Formel</div>
+            PrS = PrÜ × 100 ÷ Geschäftsvolumen
+          </div>
+        </div>
+
+        <div class="theory-block">
+          <h3>📌 Verwaltungsaufwand (VA)</h3>
+          <div class="formula-box">
+            <div class="formula-label">Formel</div>
+            VA = Personalaufwand + andere Verwaltungsaufwendungen + Abschreibungen auf Sachanlagen
+          </div>
+        </div>
+
+        <div class="theory-block">
+          <h3>📌 Bruttobedarfsspanne (BBS)</h3>
+          <div class="formula-box">
+            <div class="formula-label">Formel</div>
+            BBS = VA × 100 ÷ Geschäftsvolumen
+          </div>
+        </div>
+
+        <div class="theory-block">
+          <h3>📌 Teilbetriebsergebnis (TBE)</h3>
+          <div class="formula-box">
+            <div class="formula-label">Formel</div>
+            TBE = ZÜ + PrÜ − VA
+          </div>
+          <p>= Klassischer Erfolg: Saldo aus Zins- und Provisionsüberschuss abzüglich Verwaltungsaufwand.</p>
+        </div>
+
+        <div class="theory-block">
+          <h3>📌 Nettogewinnspanne (NGS)</h3>
+          <div class="formula-box">
+            <div class="formula-label">Formel</div>
+            NGS = BE × 100 ÷ Geschäftsvolumen
+          </div>
+          <p>BE = Betriebsergebnis = TBE +/− Handelsergebnis +/− Sonstige +/− Bewertungsergebnis</p>
+        </div>
+
+      </div>
+
+      <div class="theory-block">
+        <h3>🔗 Zusammenhang der Spannen</h3>
+        <div class="formula-box">
+          <div class="formula-label">Rechenweg</div>
+          Bruttozinsspanne (BZS)<br>
+          + Provisionsspanne (PrS)<br>
+          − Bruttobedarfsspanne (BBS)<br>
+          ──────────────────────────<br>
+          = Bruttoertragsspanne<br>
+          +/− Handelsergebnis<br>
+          +/− Sonstige Ertragsspanne<br>
+          +/− Bewertungsspanne<br>
+          ──────────────────────────<br>
+          = Nettogewinnspanne (NGS)
+        </div>
+        <div class="highlight-box">
+          ✅ Aus Anlage 3 (Regio-Bank AG): BZS = 2,582% | PrS = 0,451% | BBS = 1,797% | NGS = 0,631%
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════ -->
+    <!-- PAGE: RECHNER -->
+    <!-- ════════════════════════════════════════════════════ -->
+    <div class="page" id="page-rechner">
+      <div class="section-header">
+        <h2>🧮 Interaktiver Rechner</h2>
+        <p>Gib die GuV-Daten ein und alle Spannen werden automatisch berechnet</p>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab('gbk-rechner','tab-gbk')">GBK-Rechner</div>
+        <div class="tab" onclick="switchTab('gbk-rechner','tab-preisgrenze')">Preisgrenze Aktiv</div>
+        <div class="tab" onclick="switchTab('gbk-rechner','tab-db')">Deckungsbeitrag</div>
+      </div>
+
+      <!-- GBK RECHNER -->
+      <div class="tab-content active" id="tab-gbk">
+        <div class="calc-container">
+          <h3>📊 Gesamtbetriebskalkulation berechnen</h3>
+
+          <div style="margin-bottom:16px; color: var(--text-muted); font-size:13px;">
+            Alle Werte in TEUR (oder EUR – gleiche Einheit verwenden)
+          </div>
+
+          <div class="calc-grid">
+            <div class="input-group">
+              <label>Zinserträge (ZE) gesamt</label>
+              <input type="number" id="r_ze" placeholder="z.B. 102460" value="258300">
+            </div>
+            <div class="input-group">
+              <label>Laufende Erträge Aktien/Beteiligungen</label>
+              <input type="number" id="r_laufend" placeholder="z.B. 7200" value="66300">
+            </div>
+            <div class="input-group">
+              <label>Zinsaufwendungen (ZA)</label>
+              <input type="number" id="r_za" placeholder="z.B. 13880" value="228600">
+            </div>
+            <div class="input-group">
+              <label>Provisionserträge</label>
+              <input type="number" id="r_prE" placeholder="z.B. 37440" value="30600">
+            </div>
+            <div class="input-group">
+              <label>Provisionsaufwendungen</label>
+              <input type="number" id="r_prA" placeholder="z.B. 3230" value="2100">
+            </div>
+            <div class="input-group">
+              <label>Personalaufwand</label>
+              <input type="number" id="r_pa" placeholder="z.B. 49380" value="58200">
+            </div>
+            <div class="input-group">
+              <label>Andere Verwaltungsaufwendungen</label>
+              <input type="number" id="r_va" placeholder="z.B. 27580" value="27300">
+            </div>
+            <div class="input-group">
+              <label>Abschreibungen Sachanlagen</label>
+              <input type="number" id="r_afa" placeholder="z.B. 3430" value="5600">
+            </div>
+            <div class="input-group">
+              <label>Nettoergebnis Finanzgeschäfte</label>
+              <input type="number" id="r_handel" placeholder="z.B. 0" value="0">
+            </div>
+            <div class="input-group">
+              <label>Saldo Sonstige betr. Erträge/Aufwendungen</label>
+              <input type="number" id="r_sonstige" placeholder="z.B. 1810" value="0">
+            </div>
+            <div class="input-group">
+              <label>Bewertungsergebnis (negativ = Aufwand)</label>
+              <input type="number" id="r_bewertung" placeholder="z.B. -18300" value="-18900">
+            </div>
+            <div class="input-group">
+              <label>⭐ Geschäftsvolumen (Bilanzsumme)</label>
+              <input type="number" id="r_gv" placeholder="z.B. 4915910" value="6464700">
+            </div>
+          </div>
+
+          <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <button class="btn" onclick="calcGBK()">🧮 Berechnen</button>
+            <button class="btn btn-secondary" onclick="loadNeckarbank()">📋 Neckarbank laden</button>
+            <button class="btn btn-secondary" onclick="loadRottweiler()">📋 Rottweiler Bank laden</button>
+          </div>
+
+          <div class="result-display" id="gbk-result">
+            <div class="result-title">📊 Ergebnis – Gesamtbetriebskalkulation</div>
+
+            <div class="result-row-calc">
+              <span class="lbl">Zinserträge (ZE) gesamt</span>
+              <span class="val neutral" id="res-ze">–</span>
+            </div>
+            <div class="result-row-calc">
+              <span class="lbl">+ Laufende Erträge</span>
+              <span class="val neutral" id="res-laufend">–</span>
+            </div>
+            <div class="result-row-calc">
+              <span class="lbl">− Zinsaufwendungen</span>
+              <span class="val" style="color:var(--red)" id="res-za">–</span>
+            </div>
+            <div class="result-row-calc" style="border-top:1px solid rgba(59,130,246,0.3); padding-top:8px">
+              <span class="lbl" style="font-weight:600; color:var(--text)">= Zinsüberschuss (ZÜ)</span>
+              <span class="val good" id="res-zue">–</span>
+            </div>
+            <div class="result-row-calc">
+              <span class="lbl">+ Provisionsüberschuss (PrÜ)</span>
+              <span class="val good" id="res-prue">–</span>
+            </div>
+            <div class="result-row-calc">
+              <span class="lbl">− Verwaltungsaufwand (VA)</span>
+              <span class="val" style="color:var(--red)" id="res-va">–</span>
+            </div>
+            <div class="result-row-calc" style="border-top:1px solid rgba(59,130,246,0.3); padding-top:8px">
+              <span class="lbl" style="font-weight:600; color:var(--text)">= Teilbetriebsergebnis (TBE)</span>
+              <span class="val" id="res-tbe">–</span>
+            </div>
+            <div class="result-row-calc">
+              <span class="lbl">+/− Handelsergebnis</span>
+              <span class="val neutral" id="res-handel">–</span>
+            </div>
+            <div class="result-row-calc">
+              <span class="lbl">+/− Sonstige</span>
+              <span class="val neutral" id="res-sonstige">–</span>
+            </div>
+            <div class="result-row-calc">
+              <span class="lbl">+/− Bewertungsergebnis</span>
+              <span class="val" id="res-bewertung">–</span>
+            </div>
+
+            <div class="big-result">
+              <div class="br-label">🏆 Betriebsergebnis (BE)</div>
+              <div class="br-val" id="res-be">–</div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-top:16px;">
+              <div style="background:rgba(59,130,246,0.08);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center">
+                <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Bruttozinsspanne</div>
+                <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--blue-light)" id="res-bzs">–</div>
+              </div>
+              <div style="background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.2);border-radius:10px;padding:12px;text-align:center">
+                <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Provisionsspanne</div>
+                <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#a78bfa" id="res-prs">–</div>
+              </div>
+              <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:10px;padding:12px;text-align:center">
+                <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Nettogewinnspanne</div>
+                <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--green)" id="res-ngs">–</div>
+              </div>
+            </div>
+
+            <div id="res-branchenvergleich" style="margin-top:16px;display:none">
+              <div class="divider"></div>
+              <div style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px">📊 Branchenvergleich (Neckarbank Aufgabe)</div>
+              <div class="result-row-calc">
+                <span class="lbl">BZS Branche</span><span class="val">1,40 %</span>
+              </div>
+              <div class="result-row-calc">
+                <span class="lbl">PrS Branche</span><span class="val">0,95 %</span>
+              </div>
+              <div class="result-row-calc">
+                <span class="lbl">NGS Branche</span><span class="val">0,50 %</span>
+              </div>
+              <div id="res-vergleichtext" style="margin-top:12px; font-size:13px; color:var(--text-muted); line-height:1.6"></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- PREISGRENZE RECHNER -->
+      <div class="tab-content" id="tab-preisgrenze">
+        <div class="calc-container">
+          <h3>💰 Preisuntergrenze Aktivgeschäft (Kreditkalkulation)</h3>
+          <p style="color:var(--text-muted);font-size:13px;margin-bottom:20px">
+            Berechnet den Mindestzinssatz für ein Darlehen (Preisuntergrenze = nur Kosten gedeckt, kein Gewinn)
+          </p>
+
+          <div class="calc-grid">
+            <div class="input-group">
+              <label>GKM-Satz / Alternativzinssatz (% p.a.)</label>
+              <input type="number" step="0.01" id="pg_gkm" placeholder="z.B. 2.90" value="2.90">
+            </div>
+            <div class="input-group">
+              <label>Risikokostensatz (% p.a.)</label>
+              <input type="number" step="0.01" id="pg_risko" placeholder="z.B. 0.30" value="0.30">
+            </div>
+            <div class="input-group">
+              <label>Standardeinzelkosten (% p.a.)</label>
+              <input type="number" step="0.01" id="pg_sek" placeholder="z.B. 0.28" value="0.28">
+            </div>
+            <div class="input-group">
+              <label>Overheadkostensatz (% p.a.)</label>
+              <input type="number" step="0.01" id="pg_overhead" placeholder="z.B. 0.40" value="0.40">
+            </div>
+            <div class="input-group">
+              <label>Eigenkapitalverzinsung (% p.a.)</label>
+              <input type="number" step="0.01" id="pg_ek" placeholder="z.B. 0 (wenn EK-frei)" value="0">
+            </div>
+            <div class="input-group">
+              <label>Gewinnaufschlag (% p.a.)</label>
+              <input type="number" step="0.01" id="pg_gewinn" placeholder="z.B. 0.40" value="0">
+            </div>
+          </div>
+
+          <button class="btn" onclick="calcPreisgrenze()">🧮 Berechnen</button>
+
+          <div class="result-display" id="pg-result">
+            <div class="result-title">💰 Ergebnis – Preiskalkulation</div>
+            <div class="result-row-calc">
+              <span class="lbl">GKM-Satz (Zinsen)</span>
+              <span class="val neutral" id="pg-res-gkm">–</span>
+            </div>
+            <div class="result-row-calc">
+              <span class="lbl">+ Risikokostensatz</span>
+              <span class="val" style="color:var(--red)" id="pg-res-risko">–</span>
+            </div>
+            <div class="result-row-calc">
+              <span class="lbl">+ Standardeinzelkosten</span>
+              <span class="val" style="color:var(--red)" id="pg-res-sek">–</span>
+            </div>
+            <div class="result-row-calc">
+              <span class="lbl">+ Overheadkosten</span>
+              <span class="val" style="color:var(--red)" id="pg-res-overhead">–</span>
+            </div>
+            <div class="result-row-calc">
+              <span class="lbl">+ Eigenkapitalverzinsung</span>
+              <span class="val" style="color:var(--red)" id="pg-res-ek">–</span>
+            </div>
+            <div class="big-result">
+              <div class="br-label">🎯 Preisuntergrenze (Kundenzinssatz mind.)</div>
+              <div class="br-val" id="pg-res-total">–</div>
+            </div>
+            <div class="big-result" style="margin-top:8px; background:rgba(245,158,11,0.08); border-color:rgba(245,158,11,0.3)">
+              <div class="br-label">💹 Mit Gewinnaufschlag (Normalpreis)</div>
+              <div class="br-val" style="color:var(--gold)" id="pg-res-gewinn">–</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DECKUNGSBEITRAG RECHNER -->
+      <div class="tab-content" id="tab-db">
+        <div class="calc-container">
+          <h3>🔢 Deckungsbeitrag Kontokorrentkonto</h3>
+          <p style="color:var(--text-muted);font-size:13px;margin-bottom:20px">Nach Nagoldbank-Schema (Beck GmbH Aufgabe)</p>
+
+          <div class="calc-grid">
+            <div class="input-group">
+              <label>Jahresdurchschnitt "Soll" (EUR)</label>
+              <input type="number" id="db_soll" value="63000">
+            </div>
+            <div class="input-group">
+              <label>Jahresdurchschnitt "Haben" (EUR)</label>
+              <input type="number" id="db_haben" value="12000">
+            </div>
+            <div class="input-group">
+              <label>Kundenzinssatz Kredit (% p.a.)</label>
+              <input type="number" step="0.01" id="db_kzSoll" value="9">
+            </div>
+            <div class="input-group">
+              <label>Kundenzinssatz Einlagen (% p.a.)</label>
+              <input type="number" step="0.01" id="db_kzHaben" value="0.5">
+            </div>
+            <div class="input-group">
+              <label>GKM-Satz aktiv (% p.a.)</label>
+              <input type="number" step="0.01" id="db_gkmAktiv" value="2.8">
+            </div>
+            <div class="input-group">
+              <label>GKM-Satz passiv (% p.a.)</label>
+              <input type="number" step="0.01" id="db_gkmPassiv" value="2.0">
+            </div>
+            <div class="input-group">
+              <label>Risikokostensatz (% p.a.) – zu ermitteln</label>
+              <input type="number" step="0.001" id="db_risko" value="1.53" placeholder="z.B. 1.53">
+            </div>
+            <div class="input-group">
+              <label>Standardeinzelkosten (EUR gesamt)</label>
+              <input type="number" id="db_sek" value="2787" placeholder="Summe aller Stückkosten">
+            </div>
+            <div class="input-group">
+              <label>Grundpreis p.a. (EUR)</label>
+              <input type="number" id="db_grundpreis" value="120">
+            </div>
+            <div class="input-group">
+              <label>Buchungsgebühren (EUR gesamt)</label>
+              <input type="number" id="db_buchungen" value="665">
+            </div>
+            <div class="input-group">
+              <label>Kontoauszüge (EUR)</label>
+              <input type="number" id="db_kontoauszug" value="36">
+            </div>
+          </div>
+
+          <button class="btn" onclick="calcDB()">🧮 Berechnen</button>
+
+          <div class="result-display" id="db-result">
+            <div class="result-title">🔢 Deckungsbeitrag – Ergebnis</div>
+            <div class="result-row-calc"><span class="lbl">Zinserträge Soll-Seite</span><span class="val good" id="db-r1">–</span></div>
+            <div class="result-row-calc"><span class="lbl">− GKM-Kosten Soll (Opportunitätszinsen)</span><span class="val" style="color:var(--red)" id="db-r2">–</span></div>
+            <div class="result-row-calc"><span class="lbl">= Konditionsbeitrag Aktivseite</span><span class="val neutral" id="db-r3">–</span></div>
+            <div class="result-row-calc"><span class="lbl">+ GKM-Erlöse Haben-Seite</span><span class="val good" id="db-r4">–</span></div>
+            <div class="result-row-calc"><span class="lbl">− Zinsaufwand Haben-Seite (Kundenzins)</span><span class="val" style="color:var(--red)" id="db-r5">–</span></div>
+            <div class="result-row-calc"><span class="lbl">= Konditionsbeitrag Passivseite</span><span class="val neutral" id="db-r6">–</span></div>
+            <div class="result-row-calc"><span class="lbl">+ Kundengebühren gesamt</span><span class="val good" id="db-r7">–</span></div>
+            <div class="result-row-calc" style="border-top:1px solid rgba(59,130,246,0.3)"><span class="lbl" style="font-weight:600;color:var(--text)">= DB I (vor Risikokosten)</span><span class="val" id="db-r8">–</span></div>
+            <div class="result-row-calc"><span class="lbl">− Risikokosten</span><span class="val" style="color:var(--red)" id="db-r9">–</span></div>
+            <div class="result-row-calc" style="border-top:1px solid rgba(59,130,246,0.3)"><span class="lbl" style="font-weight:600;color:var(--text)">= DB II</span><span class="val" id="db-r10">–</span></div>
+            <div class="result-row-calc"><span class="lbl">− Standardeinzelkosten</span><span class="val" style="color:var(--red)" id="db-r11">–</span></div>
+            <div class="big-result">
+              <div class="br-label">🎯 DB III (Deckungsbeitrag)</div>
+              <div class="br-val" id="db-r12">–</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════ -->
+    <!-- PAGE: PREISGRENZEN -->
+    <!-- ════════════════════════════════════════════════════ -->
+    <div class="page" id="page-preisgrenzen">
+      <div class="section-header">
+        <h2>💰 Preisgrenzen & Kalkulation</h2>
+        <p>LF11-LS06 · Rottweiler Bank AG & Donautalbank</p>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab('pg-tabs','pg-tab1')">Grundlagen</div>
+        <div class="tab" onclick="switchTab('pg-tabs','pg-tab2')">Ratenkredite & Rating</div>
+        <div class="tab" onclick="switchTab('pg-tabs','pg-tab3')">Kostenarten</div>
+      </div>
+
+      <div class="tab-content active" id="pg-tab1">
+        <div class="theory-block">
+          <h3>🎯 Situation: LF11-LS06</h3>
+          <p>Du bist als Azubi bei der Rottweiler Bank AG in der Controlling-Abteilung. Dein Kollege Max Bauer erhält eine Anfrage von Kundin Frau Sommer über ein Annuitätendarlehen über <strong>150.000 EUR</strong> mit 10 Jahren Laufzeit und anfänglicher Tilgung von 3,0 % p.a.</p>
+          <p>Aufgabe: Preisunter- und Preisobergrenze im Aktiv- und Passivgeschäft ermitteln.</p>
+        </div>
+
+        <div class="two-col">
+          <div class="theory-block">
+            <h3>📉 Preisuntergrenze (Aktivgeschäft)</h3>
+            <div class="formula-box">
+              <div class="formula-label">Formel Aktivgeschäft</div>
+              PUG = GKM-Satz<br>
+              + Risikokostensatz<br>
+              + Standardeinzelkosten<br>
+              + Overheadkostensatz<br>
+              (+ Eigenkapitalverzinsung wenn EK benötigt)
+            </div>
+            <div class="highlight-box">
+              ✅ Bei Preisuntergrenze: kein Gewinnaufschlag! Nur Kostendeckung.
+            </div>
+            <p>Für Annuitätendarlehen ab 65.000 EUR: Betriebskosten pauschal 225,00 EUR</p>
+          </div>
+
+          <div class="theory-block">
+            <h3>📈 Preisobergrenze (Passivgeschäft)</h3>
+            <div class="formula-box">
+              <div class="formula-label">Formel Passivgeschäft</div>
+              POG = GKM-Satz (passiv)<br>
+              − Standardeinzelkosten<br>
+              − Overheadkosten<br>
+              (− Eigenkapitalverzinsung)
+            </div>
+            <div class="highlight-box">
+              ✅ POG = Maximaler Zinssatz den die Bank dem Kunden für Einlagen zahlen kann, ohne Verlust zu machen.
+            </div>
+          </div>
+        </div>
+
+        <div class="theory-block">
+          <h3>📋 Kalkulationsdaten Rottweiler Bank AG</h3>
+          <table class="rating-table">
+            <tr>
+              <th>Parameter</th>
+              <th>Wert</th>
+            </tr>
+            <tr><td>Freigleicher GKM-Satz (Festgeld)</td><td>2,75 % p.a.</td></tr>
+            <tr><td>Alternativzinssatz Geldmarkt</td><td>3,8 % p.a.</td></tr>
+            <tr><td>Geldanlage am GKM (Festgeld)</td><td>4,50 % p.a.</td></tr>
+            <tr><td>Gewinnzuschlag Rottweiler Bank</td><td>0,40 % p.a.</td></tr>
+            <tr><td>Overheadkosten Zuschlag</td><td>60 % der SEK</td></tr>
+          </table>
+          <div class="warning-box">
+            💡 Bei Zwischenfinanzierung: GKM-Satz für die Restlaufzeit (z.B. 2-Jahres-GKM wenn Laufzeit 2 Jahre)
+          </div>
+        </div>
+
+        <div class="theory-block">
+          <h3>📊 Deckungsbeitragsschema (Aktiv-/Passivgeschäft)</h3>
+          <div class="formula-box">
+            <div class="formula-label">DB I bis IV</div>
+            Kundenzinsen (Erlös/Aufwand)<br>
+            − / + GKM-Satz (Opportunität)<br>
+            = Konditionsbeitrag (= DB I, Zinsmarge)<br>
+            − Risikokosten<br>
+            = DB II<br>
+            − Standardeinzelkosten (SEK)<br>
+            = DB III<br>
+            − Overheadkosten<br>
+            = DB IV (= Marktergebnis / Gewinnbeitrag)
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-content" id="pg-tab2">
+        <div class="theory-block">
+          <h3>🏦 Ratenkreditkalkulation mit Rating (Rottweiler Bank AG)</h3>
+          <p>Die Rottweiler Bank AG bietet bonitätsabhängige Zinssätze je nach Ratingklasse an:</p>
+
+          <table class="rating-table" style="margin-top:16px">
+            <tr>
+              <th>Score-Wert</th>
+              <th>Ratingklasse</th>
+              <th>Ausfallwahrscheinlichkeit</th>
+              <th>Risikokostensatz</th>
+              <th>Risiko</th>
+            </tr>
+            <tr><td>95–100</td><td>1 (A)</td><td>0,08 %</td><td>0,10 %</td><td class="risk-low">⬤ Sehr niedrig</td></tr>
+            <tr><td>85–94</td><td>2 (B)</td><td>0,12 %</td><td>0,25 %</td><td class="risk-low">⬤ Niedrig</td></tr>
+            <tr><td>75–84</td><td>3 (C)</td><td>0,17 %</td><td>0,45 %</td><td class="risk-low">⬤ Niedrig</td></tr>
+            <tr><td>60–74</td><td>4 (D)</td><td>0,26 %</td><td>0,75 %</td><td class="risk-mid">⬤ Mittel</td></tr>
+            <tr><td>50–59</td><td>5 (E)</td><td>0,39 %</td><td>–</td><td class="risk-mid">⬤ Mittel</td></tr>
+            <tr><td>0–29</td><td>13 (F)</td><td>–</td><td>–</td><td class="risk-high">⬤ Kreditvergabe nur in begründeten Ausnahmefällen</td></tr>
+          </table>
+
+          <div class="formula-box" style="margin-top:16px">
+            <div class="formula-label">Kundenzinssatz (Preisuntergrenze Ratenkredit)</div>
+            KZ = GKM-Satz + Risikokostensatz + Standardeinzelkosten + Overheadkostenzuschlag
+          </div>
+
+          <div class="warning-box" style="margin-top:12px">
+            💡 Aus Anlage 2: Standardeinzelkostensatz = 2,75 % p.a. (von Rottweiler Bank AG).<br>
+            Nach Basel III: Bei ausgefallenen Ratenkrediten (Zahlungsverzug > 90 Tage) sind durchschnittlich <strong>80 % der Restschuld</strong> abzuschreiben. Direkt zurechenbare Eigenkapitalverzinsung: <strong>4 % p.a.</strong>
+          </div>
+        </div>
+
+        <div class="theory-block">
+          <h3>📝 Aufgabe: Preisgrenze Ellen Pohl & Sven Elbers</h3>
+          <p>Ermittle die Preisuntergrenze für folgende Kunden:</p>
+          <ul style="margin-top:10px; padding-left:20px; color: var(--text); line-height:1.8; font-size:14px">
+            <li><strong>Ellen Pohl:</strong> Ratingklasse 4 → Risikokostensatz 0,75 % p.a.</li>
+            <li><strong>Sven Elbers:</strong> Ratingklasse 10 → höheres Risiko</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tab-content" id="pg-tab3">
+        <div class="theory-block">
+          <h3>💡 Kostenarten in der Bankkalkulation</h3>
+
+          <div class="two-col">
+            <div>
+              <h4 style="color:var(--gold);margin-bottom:10px;font-size:14px">Direkte Kosten (zurechenbar)</h4>
+              <ul style="font-size:13px;line-height:1.8;padding-left:18px">
+                <li><strong>Risikokosten:</strong> Standardeinzelkosten aus Abschreibungsbeträgen. Formel: Ø Abschreibungen ÷ Ø Forderungsbestand × 100</li>
+                <li><strong>Standardeinzelkosten (SEK):</strong> Marketingleistung, Revision, Rechnungswesen, Ausbildung – direkt dem Geschäft zuordenbar</li>
+                <li><strong>Eigenkapitalkosten:</strong> Erlöse aus EK-Einsatz (Bank-DL) – müssen gedeckt werden</li>
+              </ul>
+            </div>
+            <div>
+              <h4 style="color:var(--purple);margin-bottom:10px;font-size:14px">Overhead / Gemeinkosten</h4>
+              <ul style="font-size:13px;line-height:1.8;padding-left:18px">
+                <li>Entstehen in nicht marktorientierten Abteilungen (z.B. Geschäftsleitung)</li>
+                <li>Können nicht direkt zugerechnet werden</li>
+                <li>Werden per <strong>Zuschlagssatz</strong> auf die SEK aufgeschlagen</li>
+                <li>Rottweiler Bank: Overheadkostenzuschlag = <strong>60 % der SEK</strong></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="formula-box" style="margin-top:16px">
+            <div class="formula-label">Risikokostensatz berechnen (Nagoldbank)</div>
+            Risikokostensatz =<br>
+            (Summe Abschreibungen letzte 10 Jahre ÷ Summe tatsächliche Forderungsausfälle)<br>
+            × 100 ÷ Ø Forderungsbestand p.a.<br><br>
+            = (5.554.896 ÷ 4.278.988) × 100 ÷ 52.700.000<br>
+            ≈ zwei Nachkommastellen angeben!
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════ -->
+    <!-- PAGE: DECKUNGSBEITRAG -->
+    <!-- ════════════════════════════════════════════════════ -->
+    <div class="page" id="page-deckungsbeitrag">
+      <div class="section-header">
+        <h2>🔢 Deckungsbeitragsrechnung</h2>
+        <p>Donautalbank AG · Nagoldbank · Kontokorrentkonto</p>
+      </div>
+
+      <div class="theory-block">
+        <h3>📋 Kalkulationsdaten Donautalbank AG</h3>
+        <table class="rating-table">
+          <tr><th>Parameter</th><th>Wert</th></tr>
+          <tr><td>GKM-Satz Tagesgeld</td><td>1,95 % p.a.</td></tr>
+          <tr><td>GKM-Satz 90-Tage-Geld</td><td>2,25 % p.a.</td></tr>
+          <tr><td>GKM-Satz 2 Jahre Laufzeit</td><td>2,90 % p.a.</td></tr>
+          <tr><td>Standard-Risikokostensatz Immobiliendarlehen</td><td>0,30 % p.a.</td></tr>
+          <tr><td>Standard-Risikokostensatz Kontokorrentkredite</td><td>1,20 % p.a.</td></tr>
+          <tr><td>Standardeinzelkosten Immobiliendarlehen</td><td>0,28 % p.a.</td></tr>
+          <tr><td>Standardeinzelkosten Kontokorrentkredite</td><td>1,48 % p.a.</td></tr>
+          <tr><td>Standardeinzelkosten Termineinlagen (90 Tage)</td><td>90,00 EUR fix</td></tr>
+          <tr><td>Erf. Eigenkapitaldeckung für Risikoaktiva</td><td>8 %</td></tr>
+          <tr><td>Eigenkapitalverzinsung</td><td>12,5 % p.a.</td></tr>
+        </table>
+      </div>
+
+      <div class="theory-block">
+        <h3>🏠 Aufgabe 3.1: Bausparvertrag Jens Müller</h3>
+        <div class="schema-container">
+          <table class="schema-table">
+            <tr><th>Darlehensdaten</th><th>Wert</th></tr>
+            <tr><td>Darlehenssumme</td><td>80.000,00 EUR</td></tr>
+            <tr><td>Kundenzinssatz</td><td>4,90 % p.a.</td></tr>
+            <tr><td>Laufzeit</td><td>2 Jahre</td></tr>
+            <tr><td>Auszahlung</td><td>100 %</td></tr>
+            <tr><td>Auszahlungswert</td><td>30.04.2012</td></tr>
+            <tr><td>Gebühren Darlehenskonto</td><td>2,00 EUR/Monat</td></tr>
+          </table>
+        </div>
+        <div class="formula-box">
+          <div class="formula-label">Berechnung DB IV (Marktergebnis)</div>
+          Kundenzinssatz: 4,90 % p.a.<br>
+          − GKM-Satz (2 Jahre): 2,90 % p.a.<br>
+          = Konditionsbeitrag (DB I): 2,00 % p.a.<br>
+          − Risikokostensatz: 0,30 % p.a.<br>
+          = DB II: 1,70 % p.a.<br>
+          − SEK: 0,28 % p.a.<br>
+          = DB III: 1,42 % p.a.<br>
+          − EK-Kosten: 8 % × 80.000 = 6.400 EUR × 12,5 % = 800 EUR p.a. = 1,00 % p.a.<br>
+          = DB IV: 0,42 % p.a. = 336 EUR p.a. (+ Gebühren 24 EUR) = ca. <strong>360 EUR</strong>
+        </div>
+      </div>
+
+      <div class="theory-block">
+        <h3>💳 Aufgabe 3.2: Termineinlage Jasmin Reich</h3>
+        <p>Jasmin Reich möchte 120.000 EUR vom 15.04. bis 15.07.2012 anlegen (90 Tage). Sie fragt nach dem möglichen Zinssatz wenn auf Overhead und Gewinn verzichtet wird.</p>
+        <div class="formula-box">
+          <div class="formula-label">Preisgrenze Passiv (Termineinlage)</div>
+          GKM-Satz 90-Tage-Geld: 2,25 % p.a.<br>
+          − Standardeinzelkosten: 90 EUR fix (auf Betrag umrechnen!)<br>
+          SEK in %: 90 ÷ 120.000 × 100 × 365/90 = 0,30 % p.a.<br>
+          = Max. Kundenzinssatz: 2,25 % − 0,30 % = <strong>1,95 % p.a.</strong>
+        </div>
+      </div>
+
+      <div class="theory-block">
+        <h3>🏭 Nagoldbank – Kontokorrentkonto Beck GmbH</h3>
+        <p>Die Nagoldbank ermittelt den Ergebnisbeitrag des KK-Kontos der Beck GmbH für 2006:</p>
+        <table class="rating-table" style="margin-top:12px">
+          <tr><th>Daten</th><th>Wert</th></tr>
+          <tr><td>Ø Volumen "Soll"</td><td>63.000,00 EUR</td></tr>
+          <tr><td>Ø Volumen "Haben"</td><td>12.000,00 EUR</td></tr>
+          <tr><td>Kundenzinssatz KK-Kredit</td><td>9 % p.a.</td></tr>
+          <tr><td>Kundenzinssatz Sichteinlagen</td><td>0,5 % p.a.</td></tr>
+          <tr><td>GMK-Satz aktiv</td><td>2,8 % p.a.</td></tr>
+          <tr><td>GMK-Satz passiv</td><td>2,0 % p.a.</td></tr>
+          <tr><td>Bareinzahlungen 120 × 2,50</td><td>300,00 EUR</td></tr>
+          <tr><td>Barauszahlungen 40 × 1,50</td><td>60,00 EUR</td></tr>
+          <tr><td>Gutschriften 830 × 1,00</td><td>830,00 EUR</td></tr>
+          <tr><td>Überweisungen 420 × 1,20</td><td>504,00 EUR</td></tr>
+          <tr><td>Scheckeinzüge 170 × 0,80</td><td>136,00 EUR</td></tr>
+          <tr><td>Scheckeinlösungen 40 × 0,75</td><td>30,00 EUR</td></tr>
+          <tr><td>Grundpreis 12 × 10,00</td><td>120,00 EUR</td></tr>
+          <tr><td>Buchungspreise × 0,50</td><td>665,00 EUR</td></tr>
+          <tr><td>36 Kontoauszüge × 1,00</td><td>36,00 EUR</td></tr>
+        </table>
+        <div class="highlight-box" style="margin-top:12px">
+          📌 Risikokostensatz: 5.554.896 ÷ 4.278.988 = 1,298... → auf 52.700.000 umrechnen → <strong>≈ 1,53 % p.a.</strong><br>
+          Den genauen Rechenweg findest du auf der <a onclick="showPage('loesungen')" style="color:var(--blue-light);cursor:pointer;text-decoration:underline">Lösungsseite ✅</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════ -->
+    <!-- PAGE: KONZERN & HOLDING -->
+    <!-- ════════════════════════════════════════════════════ -->
+    <div class="page" id="page-konzern">
+      <div class="section-header">
+        <h2>🏢 Konzern & Holding</h2>
+        <p>Projektkompetenz – Von Shangavan Ravindran</p>
+      </div>
+
+      <div class="two-col">
+        <div class="theory-block">
+          <h3>🏗️ Was ist ein Konzern?</h3>
+          <ul>
+            <li>Zusammenschluss mehrerer Unternehmen</li>
+            <li>Eine <strong>Muttergesellschaft</strong> leitet die anderen</li>
+            <li>Tochtergesellschaften bleiben <strong>rechtlich selbstständig</strong></li>
+            <li>Verbindung durch <strong>Kapitalbeteiligung</strong></li>
+          </ul>
+          <div class="divider"></div>
+          <h4 style="color:var(--gold);font-size:14px;margin-bottom:10px">Arten von Konzernen</h4>
+          <ul>
+            <li><strong>Horizontaler Konzern:</strong> gleiche Branche (z.B. mehrere Brauereien)</li>
+            <li><strong>Vertikaler Konzern:</strong> verschiedene Produktionsstufen (Rohstoff → Produktion → Verkauf)</li>
+            <li><strong>Mischkonzern:</strong> verschiedene Branchen</li>
+          </ul>
+        </div>
+
+        <div class="theory-block">
+          <h3>🏦 Was ist eine Holding?</h3>
+          <ul>
+            <li>Unternehmen besitzt Anteile an anderen Firmen</li>
+            <li>Verwaltet Beteiligungen</li>
+            <li>Kontrolliert Tochterunternehmen</li>
+            <li>Kann selbst auch Geschäfte betreiben</li>
+          </ul>
+          <div class="divider"></div>
+          <h4 style="color:var(--gold);font-size:14px;margin-bottom:10px">Arten von Holdings</h4>
+          <ul>
+            <li><strong>Reine Holding:</strong> verwaltet nur Beteiligungen</li>
+            <li><strong>Mischholding:</strong> verwaltet Beteiligungen + betreibt eigene Geschäfte</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="theory-block">
+        <h3>🌐 Aufbau eines Konzerns (Beispiel)</h3>
+        <div class="konzern-tree">
+          <div><span class="k-node root">KONZERN (Muttergesellschaft)</span></div>
+          <div style="margin:10px 0; color:var(--border)">↓ 70% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ↓ 60%</div>
+          <div>
+            <span class="k-node">Unternehmung A<span class="k-percent">35% → C</span></span>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <span class="k-node">Unternehmung D</span>
+          </div>
+          <div style="margin:8px 0; color:var(--border); font-size:12px">A → B (20%) &nbsp; A → C &nbsp; D → F (45%) &nbsp; C → E (10%)</div>
+          <div>
+            <span class="k-node" style="font-size:11px">B</span>
+            <span class="k-node" style="font-size:11px">C</span>
+            <span class="k-node" style="font-size:11px">E (49% v. B)</span>
+            <span class="k-node" style="font-size:11px">F</span>
+          </div>
+          <div style="margin-top:12px; font-size:12px; color:var(--text-muted); line-height:1.6">
+            A, B, D und (über kumulierte Beteiligungsquoten) C, E, F sind indirekt im Mehrheitsbesitz von A.<br>
+            D und F sind wechselseitig beteiligt (verbundene Unternehmen).
+          </div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="theory-block">
+          <h3>💡 Warum Konzern/Holding gründen?</h3>
+          <ul>
+            <li>🚀 Wachstum</li>
+            <li>📊 Risikoverteilung</li>
+            <li>💰 Steuerliche Vorteile</li>
+            <li>🏦 Bessere Finanzierung</li>
+            <li>🌍 Internationale Expansion</li>
+          </ul>
+        </div>
+
+        <div class="theory-block">
+          <h3>📊 Auswirkungen</h3>
+          <p style="font-weight:600;color:var(--gold);margin-bottom:8px;font-size:13px">Auf Marktteilnehmer:</p>
+          <ul style="font-size:13px">
+            <li>Mehr Wettbewerb / weniger Wettbewerb</li>
+            <li>Niedrigere oder höhere Preise</li>
+            <li>Mehr Arbeitsplätze</li>
+            <li>Größere Produktauswahl</li>
+          </ul>
+          <p style="font-weight:600;color:var(--gold);margin:12px 0 8px;font-size:13px">Auf Gesamtwirtschaft:</p>
+          <ul style="font-size:13px">
+            <li>Wirtschaftswachstum</li>
+            <li>Steuereinnahmen</li>
+            <li>Investitionen & Innovation</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="highlight-box">
+        📌 <strong>Fazit:</strong> Konzerne und Holdings sind wichtige Unternehmensformen. Sie beeinflussen Markt und Wirtschaft, bringen Chancen und Risiken, schaffen Arbeitsplätze und Wachstum.
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════ -->
+    <!-- PAGE: NACHFRAGE -->
+    <!-- ════════════════════════════════════════════════════ -->
+    <div class="page" id="page-nachfrage">
+      <div class="section-header">
+        <h2>📈 Nachfrage & Preiselastizität</h2>
+        <p>Verschiebung der Nachfragekurve & Elastizitätsrechnung</p>
+      </div>
+
+      <div class="theory-block">
+        <h3>🔄 Aufgabe 2: Verschiebung der Gesamtnachfrage</h3>
+        <p>Welche Faktoren können N¹ → N² (Rechtsverscheibung = Nachfrageanstieg) verursachen?</p>
+        <table class="rating-table" style="margin-top:12px">
+          <tr><th>#</th><th>Faktor</th><th>Verschiebung?</th><th>Erklärung</th></tr>
+          <tr><td>1</td><td>Preis des Gutes 1 gesunken</td><td style="color:var(--red)">❌ Nein</td><td>Bewegung auf der Kurve, keine Verschiebung</td></tr>
+          <tr><td>2</td><td>Verstärkte Werbung</td><td style="color:var(--green)">✅ Ja (rechts)</td><td>Mehr Nachfrage bei gleichem Preis</td></tr>
+          <tr><td>3</td><td>Einkommen gestiegen</td><td style="color:var(--green)">✅ Ja (rechts)</td><td>Mehr Kaufkraft → mehr Nachfrage</td></tr>
+          <tr><td>4</td><td>Preis verwandtes Gut 2 gesunken</td><td style="color:var(--text-muted)">⚠️ Komplementär: rechts / Substitut: links</td><td>Abhängig vom Verhältnis der Güter</td></tr>
+          <tr><td>5</td><td>Preis verwandtes Gut 3 gestiegen</td><td style="color:var(--green)">✅ Rechts (wenn Substitut)</td><td>Substitut teurer → mehr Nachfrage nach Gut 1</td></tr>
+          <tr><td>6</td><td>Zahl der Konsumenten gestiegen</td><td style="color:var(--green)">✅ Ja (rechts)</td><td>Marktgröße wächst</td></tr>
+          <tr><td>7</td><td>Nutzeneinschätzung verringert</td><td style="color:var(--red)">❌ Links</td><td>Weniger attraktiv → Nachfragerückgang</td></tr>
+        </table>
+      </div>
+
+      <div class="theory-block">
+        <h3>📉 Aufgabe 3: Preiselastizität der Nachfrage</h3>
+        <div class="formula-box">
+          <div class="formula-label">Formel</div>
+          Preiselastizität = (ΔMenge / Menge) ÷ (ΔPreis / Preis)<br><br>
+          |e| &lt; 1 → unelastisch (Preis ↑ → Umsatz ↑)<br>
+          |e| = 1 → proportional elastisch<br>
+          |e| &gt; 1 → elastisch (Preis ↑ → Umsatz ↓)
+        </div>
+
+        <table class="rating-table" style="margin-top:12px">
+          <tr><th>Fall</th><th>Elastizität</th><th>Preisveränderung</th><th>Wirkung auf Umsatz</th></tr>
+          <tr><td>a)</td><td>0,6</td><td>steigt</td><td style="color:var(--green)">↑ Umsatz steigt (unelastisch)</td></tr>
+          <tr><td>b)</td><td>1,8</td><td>fällt</td><td style="color:var(--green)">↑ Umsatz steigt (elastisch, P ↓ → M ↑↑)</td></tr>
+          <tr><td>c)</td><td>1,2</td><td>steigt</td><td style="color:var(--red)">↓ Umsatz sinkt (elastisch, P ↑ → M ↓↓)</td></tr>
+          <tr><td>d)</td><td>0,8</td><td>fällt</td><td style="color:var(--red)">↓ Umsatz sinkt (unelastisch, P ↓ → M ↓)</td></tr>
+        </table>
+
+        <div class="highlight-box" style="margin-top:16px">
+          📌 <strong>Merke:</strong> An Punkt A der Nachfragekurve ist die Elastizität hoch (∞), an Punkt E = 0. In der Mitte (Punkt C) = 1. Je weiter oben auf der linearen NK, desto elastischer.
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════ -->
+    <!-- PAGE: BÖRSE -->
+    <!-- ════════════════════════════════════════════════════ -->
+    <div class="page" id="page-boerse">
+      <div class="section-header">
+        <h2>📉 Börse & Auktion (Xetra)</h2>
+        <p>Aufgabe 5: Preisbildung und Orderausführung</p>
+      </div>
+
+      <div class="theory-block">
+        <h3>📊 Aufgabe: Auktionspreis bestimmen (Xetra)</h3>
+        <p>Zu Beginn des elektronischen Börsenhandels Xetra stehen sich folgende Orders gegenüber:</p>
+
+        <div class="schema-container">
+          <table class="schema-table">
+            <tr>
+              <th colspan="2">Kaufaufträge</th>
+              <th colspan="2">Verkaufsaufträge</th>
+            </tr>
+            <tr>
+              <th>Volumen (Stück)</th>
+              <th>Limit (Preis in €)</th>
+              <th>Volumen (Stück)</th>
+              <th>Limit (Preis in €)</th>
+            </tr>
+            <tr><td>310</td><td>billigst</td><td>140</td><td>bestens</td></tr>
+            <tr><td>540</td><td>21,00</td><td>510</td><td>25,00</td></tr>
+            <tr><td>730</td><td>21,50</td><td>700</td><td>24,50</td></tr>
+            <tr><td>400</td><td>22,00</td><td>680</td><td>24,00</td></tr>
+            <tr><td>480</td><td>22,50</td><td>660</td><td>23,50</td></tr>
+            <tr><td>510</td><td>23,00</td><td>470</td><td>23,00</td></tr>
+          </table>
+        </div>
+
+        <div class="formula-box" style="margin-top:16px">
+          <div class="formula-label">Vorgehensweise: Auktionspreis bestimmen</div>
+          1. Kumuliere Kaufaufträge von "billigst" aufwärts (höchstes Limit zuerst)<br>
+          2. Kumuliere Verkaufsaufträge von "bestens" abwärts (niedrigstes Limit zuerst)<br>
+          3. Finde den Preis mit dem höchsten handelbaren Volumen<br>
+          4. Auktionspreis = Preis wo kum. Kauf ≥ kum. Verkauf oder maximales Handelsvolumen
+        </div>
+
+        <div class="highlight-box">
+          ✅ <strong>Lösung:</strong> Bei 23,00 EUR: Kumulierte Käufe = 310+540+730+400+480+510 = 2.970 | Kumulierte Verkäufe ab bestens = 140+510+700+680+660+470 = 3.160. Auktionspreis = <strong>23,00 EUR</strong> (maximales handelbares Volumen).
+        </div>
+      </div>
+
+      <div class="theory-block">
+        <h3>📖 Wichtige Begriffe</h3>
+        <table class="rating-table">
+          <tr><th>Begriff</th><th>Bedeutung</th></tr>
+          <tr><td>Billigst-Order</td><td>Kauforder ohne Preislimit – wird zum günstigsten verfügbaren Preis ausgeführt</td></tr>
+          <tr><td>Bestens-Order</td><td>Verkaufsorder ohne Preislimit – wird zum höchsten verfügbaren Preis ausgeführt</td></tr>
+          <tr><td>Limitorder</td><td>Kauforder: max. Preis. Verkaufsorder: min. Preis</td></tr>
+          <tr><td>Auktionsprinzip</td><td>Alle Orders werden gesammelt, dann wird ein einheitlicher Preis gefunden</td></tr>
+          <tr><td>Xetra</td><td>Elektronisches Handelssystem der Deutschen Börse AG</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════ -->
+    <!-- PAGE: QUIZ -->
+    <!-- ════════════════════════════════════════════════════ -->
+    <div class="page" id="page-quiz">
+      <div class="section-header">
+        <h2>❓ Quiz</h2>
+        <p>Teste dein Wissen – 30+ Fragen zu allen Themen</p>
+      </div>
+
+      <div class="quiz-container">
+        <div id="quiz-area">
+          <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue-light);margin-bottom:8px" id="quiz-topic-label"></div>
+          <div class="quiz-question" id="quiz-q"></div>
+          <div class="quiz-options" id="quiz-opts"></div>
+          <div class="quiz-feedback" id="quiz-fb"></div>
+          <div class="quiz-nav">
+            <button class="btn" id="quiz-next-btn" onclick="nextQuestion()" style="display:none">Nächste Frage →</button>
+            <div class="quiz-progress-text" id="quiz-prog"></div>
+          </div>
+        </div>
+        <div id="quiz-done" style="display:none">
+          <div class="quiz-score-board">
+            <div style="font-size:14px;color:var(--text-muted);margin-bottom:8px">Dein Ergebnis</div>
+            <div class="score-val" id="quiz-score-display"></div>
+            <div style="font-size:14px;color:var(--text-muted);margin-top:4px" id="quiz-score-text"></div>
+          </div>
+          <div style="margin-top:20px;text-align:center">
+            <button class="btn" onclick="restartQuiz()">🔄 Nochmal spielen</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════ -->
+    <!-- PAGE: FLASHCARDS -->
+    <!-- ════════════════════════════════════════════════════ -->
+    <div class="page" id="page-flashcards">
+      <div class="section-header">
+        <h2>🃏 Karteikarten</h2>
+        <p>Klicke auf die Karte zum Umdrehen</p>
+      </div>
+
+      <div class="flashcard-hint">👆 Klicke auf die Karte zum Umdrehen · Nutze die Pfeile zum Navigieren</div>
+
+      <div class="flashcard-scene" id="fc-scene" onclick="flipCard()">
+        <div class="flashcard-inner" id="fc-inner">
+          <div class="flashcard-face flashcard-front">
+            <div class="fc-label">FRAGE</div>
+            <div class="fc-question" id="fc-q">Lade...</div>
+          </div>
+          <div class="flashcard-face flashcard-back">
+            <div class="fc-label">ANTWORT</div>
+            <div class="fc-answer" id="fc-a">Lade...</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flashcard-nav">
+        <button class="btn btn-secondary" onclick="prevCard()">← Zurück</button>
+        <span id="fc-count" style="font-size:13px;color:var(--text-muted)">1 / 20</span>
+        <button class="btn" onclick="nextCard()">Weiter →</button>
+      </div>
+
+      <div style="margin-top:20px;text-align:center">
+        <button class="btn btn-secondary" onclick="shuffleCards()">🔀 Mischen</button>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════ -->
+    <!-- PAGE: LÖSUNGEN ⭐ -->
+    <!-- ════════════════════════════════════════════════════ -->
+    <div class="page" id="page-loesungen">
+      <div class="section-header">
+        <h2>✅ Lösungsseite</h2>
+        <p>Alle Musterlösungen aus deinen Unterlagen – Schritt für Schritt erklärt</p>
+      </div>
+
+      <div class="warning-box">
+        ⚠️ <strong>Wichtig:</strong> Erst selbst rechnen, dann kontrollieren! Klappe die Lösungen auf wenn du fertig bist.
+      </div>
+
+      <!-- LÖSUNG 1: NECKARBANK -->
+      <div class="solution-card">
+        <div class="solution-header" onclick="toggleSolution('sol1')">
+          <h3>📊 Neckarbank AG – Gesamtbetriebskalkulation (Übungsaufgabe 3.1 & 3.2)</h3>
+          <span class="solution-toggle" id="sol1-toggle">▼</span>
+        </div>
+        <div class="solution-body" id="sol1">
+          <div class="warning-box" style="margin-top:16px">
+            <strong>Gegeben:</strong> Geschäftsvolumen (Bilanzsumme) = 6.464.700 TEUR
+          </div>
+
+          <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <div class="step-title">Zinsüberschuss (ZÜ) berechnen</div>
+              <div class="step-formula">
+                ZÜ = ZE + laufende Erträge aus Aktien/Beteiligungen − ZA<br>
+                ZÜ = 258.300 + 66.300 + 7.600 − 228.600<br>
+                <strong>ZÜ = 103.600 TEUR</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <div class="step-title">Bruttozinsspanne (BZS)</div>
+              <div class="step-formula">
+                BZS = ZÜ × 100 ÷ GV<br>
+                BZS = 103.600 × 100 ÷ 6.464.700<br>
+                <strong>BZS = 1,603 %</strong>
+              </div>
+              <div class="answer-badge">✅ Branche: 1,40 % → Neckarbank liegt 0,203 %-Punkte ÜBER dem Durchschnitt 👍</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <div class="step-title">Provisionsüberschuss & Provisionsspanne</div>
+              <div class="step-formula">
+                PrÜ = 30.600 − 2.100 = 28.500 TEUR<br>
+                PrS = 28.500 × 100 ÷ 6.464.700<br>
+                <strong>PrS = 0,441 %</strong>
+              </div>
+              <div class="answer-badge" style="background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.3);color:#fca5a5">⚠️ Branche: 0,95 % → 0,509 %-Punkte UNTER dem Schnitt – deutlich schlechter!</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-number">4</div>
+            <div class="step-content">
+              <div class="step-title">Verwaltungsaufwand & Bruttobedarfsspanne</div>
+              <div class="step-formula">
+                VA = 58.200 + 27.300 + 5.600 = 91.100 TEUR<br>
+                BBS = 91.100 × 100 ÷ 6.464.700 = 1,409 %<br><br>
+                TBE = ZÜ + PrÜ − VA = 103.600 + 28.500 − 91.100 = 41.000 TEUR
+              </div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-number">5</div>
+            <div class="step-content">
+              <div class="step-title">Betriebsergebnis & Nettogewinnspanne</div>
+              <div class="step-formula">
+                BE = TBE +/− Bewertungsergebnis = 41.000 − 18.900 = 22.100 TEUR<br>
+                NGS = 22.100 × 100 ÷ 6.464.700<br>
+                <strong>NGS = 0,342 %</strong>
+              </div>
+              <div class="answer-badge" style="background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.3);color:#fca5a5">⚠️ Branche: 0,50 % → 0,158 %-Punkte UNTER dem Schnitt</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-number">6</div>
+            <div class="step-content">
+              <div class="step-title">Aufgabe 3.1.2: Maßnahmen zur Verbesserung der Provisionsspanne</div>
+              <div class="step-text">
+                1. <strong>Kontoführungsgebühren erhöhen</strong> → höhere PGE (Provisionsgesamterträge) generieren<br>
+                2. <strong>Marketingaktion</strong> z.B. für Kreditkarten zur Steigerung des Volumens beim Kreditkartenvermittlungsgeschäft → PGE soll steigen
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LÖSUNG 2: ROTTWEILER BANK GBK -->
+      <div class="solution-card">
+        <div class="solution-header" onclick="toggleSolution('sol2')">
+          <h3>🏦 Rottweiler Bank AG – GBK Geschäftsjahr vs. Vorjahr (Anlage 4)</h3>
+          <span class="solution-toggle" id="sol2-toggle">▼</span>
+        </div>
+        <div class="solution-body" id="sol2">
+          <div style="padding-top:16px">
+            <div class="schema-container">
+              <table class="schema-table">
+                <tr>
+                  <th>Position</th>
+                  <th>Geschäftsjahr (TEUR)</th>
+                  <th>Vorjahr (TEUR)</th>
+                  <th>GJ in %</th>
+                  <th>VJ in %</th>
+                </tr>
+                <tr><td>Zinserträge</td><td>102.460</td><td>96.610</td><td></td><td></td></tr>
+                <tr><td>+ Laufende Erträge Aktien/Beteiligungen</td><td>7.200</td><td>5.800</td><td></td><td></td></tr>
+                <tr><td>− Zinsaufwendungen</td><td class="minus">−13.880</td><td class="minus">−7.520</td><td></td><td></td></tr>
+                <tr class="subtotal-row"><td>= Zinsüberschuss (ZÜ)</td><td>95.780</td><td>94.890</td><td></td><td></td></tr>
+                <tr><td>Provisionserträge</td><td>37.440</td><td>33.290</td><td></td><td></td></tr>
+                <tr><td>− Provisionsaufwendungen</td><td class="minus">−3.230</td><td class="minus">−2.660</td><td></td><td></td></tr>
+                <tr class="subtotal-row"><td>= Provisionsüberschuss (PrÜ)</td><td>34.210</td><td>30.630</td><td></td><td></td></tr>
+                <tr><td>Personalaufwand</td><td>−49.380</td><td>−46.060</td><td></td><td></td></tr>
+                <tr><td>− Andere Verwaltungsaufwendungen</td><td>−27.580</td><td>−21.610</td><td></td><td></td></tr>
+                <tr><td>− Abschreibungen Sachanlagen</td><td>−3.430</td><td>−2.970</td><td></td><td></td></tr>
+                <tr class="subtotal-row"><td>= Verwaltungsaufwand (VA)</td><td>80.390</td><td>70.640</td><td></td><td></td></tr>
+                <tr class="subtotal-row"><td>= Teilbetriebsergebnis (TBE)</td><td>49.600</td><td>54.880</td><td></td><td></td></tr>
+                <tr><td>Handelsergebnis</td><td>0</td><td>0</td><td>0,00 %</td><td>0,00 %</td></tr>
+                <tr><td>+ Sonstige betr. Erträge/Aufwendungen</td><td>1.810</td><td>2.050</td><td></td><td></td></tr>
+                <tr><td>− Bewertungsergebnis (Risikovorsorge)</td><td>−7.460</td><td>−1.250</td><td></td><td></td></tr>
+                <tr class="result-row"><td>= Betriebsergebnis (BE)</td><td>43.950</td><td>55.680</td><td></td><td></td></tr>
+              </table>
+            </div>
+
+            <div class="step">
+              <div class="step-number">!</div>
+              <div class="step-content">
+                <div class="step-title">Berechnung der Spannen (GV Geschäftsjahr = 4.915.910 TEUR, VJ = 4.627.180 TEUR)</div>
+                <div class="step-formula">
+                  GJ: BZS = 95.780 / 4.915.910 × 100 = 1,949 %<br>
+                  GJ: NGS = 43.950 / 4.915.910 × 100 = 0,894 %<br><br>
+                  VJ: BZS = 94.890 / 4.627.180 × 100 = 2,051 %<br>
+                  VJ: NGS = 55.680 / 4.627.180 × 100 = 1,203 %<br><br>
+                  → <strong>Das BE ist um 11.730 TEUR gesunken!</strong><br>
+                  Hauptursache: Bewertungsergebnis um −6.210 TEUR schlechter + VA gestiegen
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-number">!</div>
+              <div class="step-content">
+                <div class="step-title">Bericht: Warum war das GJ schlechter?</div>
+                <div class="step-text">
+                  Das Betriebsergebnis sank von 55.680 TEUR (VJ) auf 43.950 TEUR (GJ) – ein Rückgang von ca. 21 %. Die Ursachen:<br><br>
+                  1. <strong>Bewertungsergebnis</strong> verschlechterte sich massiv: von −1.250 auf −7.460 TEUR (= höhere Abschreibungen auf Forderungen/Rückstellungen im Kreditgeschäft)<br>
+                  2. <strong>Verwaltungsaufwand</strong> stieg um 9.750 TEUR (= höhere Personalkosten + andere VA)<br>
+                  3. <strong>Sonstige Erträge</strong> gingen leicht zurück
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LÖSUNG 3: NAGOLDBANK DECKUNGSBEITRAG -->
+      <div class="solution-card">
+        <div class="solution-header" onclick="toggleSolution('sol3')">
+          <h3>🔢 Nagoldbank – Deckungsbeitrag Kontokorrentkonto Beck GmbH</h3>
+          <span class="solution-toggle" id="sol3-toggle">▼</span>
+        </div>
+        <div class="solution-body" id="sol3">
+          <div style="padding-top:16px">
+            <div class="step">
+              <div class="step-number">1</div>
+              <div class="step-content">
+                <div class="step-title">Risikokostensatz ermitteln</div>
+                <div class="step-formula">
+                  Ø Abschreibungen p.a. = 5.554.896 ÷ 10 = 555.489,60 EUR<br>
+                  Tatsächliche Ausfälle p.a. = 4.278.988 ÷ 10 = 427.898,80 EUR<br>
+                  → Risikokostensatz = (555.489,60 ÷ 52.700.000) × 100 = <strong>1,054 %</strong><br><br>
+                  Alternativ (direkt): (5.554.896 ÷ 4.278.988) korrigiert auf Bestand...<br>
+                  Standardmäßig: 5.554.896 ÷ (52.700.000 × 10) × 100 = <strong>≈ 1,054 % p.a.</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-number">2</div>
+              <div class="step-content">
+                <div class="step-title">Standardeinzelkosten (SEK) – Summe aller Stückkosten</div>
+                <div class="step-formula">
+                  120 × 2,50 = 300,00 EUR (Bareinzahlungen)<br>
+                  40 × 1,50 = 60,00 EUR (Barauszahlungen)<br>
+                  830 × 1,00 = 830,00 EUR (Gutschriften)<br>
+                  420 × 1,20 = 504,00 EUR (Überweisungen)<br>
+                  170 × 0,80 = 136,00 EUR (Scheckeinzüge)<br>
+                  40 × 0,75 = 30,00 EUR (Scheckeinlösungen)<br>
+                  ─────────────────────────────<br>
+                  <strong>SEK gesamt = 1.860,00 EUR</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-number">3</div>
+              <div class="step-content">
+                <div class="step-title">Kundengebühren</div>
+                <div class="step-formula">
+                  Grundpreis: 12 × 10,00 = 120,00 EUR<br>
+                  Buchungspreise: 1.330 × 0,50 = 665,00 EUR<br>
+                  Kontoauszüge: 36 × 1,00 = 36,00 EUR<br>
+                  <strong>Gebühren gesamt = 821,00 EUR</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-number">4</div>
+              <div class="step-content">
+                <div class="step-title">Deckungsbeitrag berechnen</div>
+                <div class="step-formula">
+                  Zinserträge Soll: 63.000 × 9 % = 5.670,00 EUR<br>
+                  − GKM aktiv: 63.000 × 2,8 % = 1.764,00 EUR<br>
+                  = Kond.beitrag Aktiv: <strong>3.906,00 EUR</strong><br><br>
+                  GKM passiv: 12.000 × 2,0 % = 240,00 EUR<br>
+                  − Kundenzinsen Haben: 12.000 × 0,5 % = 60,00 EUR<br>
+                  = Kond.beitrag Passiv: <strong>180,00 EUR</strong><br><br>
+                  + Gebühren: 821,00 EUR<br>
+                  = DB I: 3.906 + 180 + 821 = <strong>4.907,00 EUR</strong><br><br>
+                  − Risikokosten: 63.000 × 1,054 % = 664,02 EUR<br>
+                  = DB II: <strong>4.242,98 EUR</strong><br><br>
+                  − SEK: 1.860,00 EUR<br>
+                  = <strong>DB III = 2.382,98 EUR</strong>
+                </div>
+                <div class="answer-badge">✅ Deckungsbeitrag III ≈ 2.383 EUR</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LÖSUNG 4: DONAUTALBANK BAUSPARVERTRAG -->
+      <div class="solution-card">
+        <div class="solution-header" onclick="toggleSolution('sol4')">
+          <h3>🏠 Donautalbank – Bausparvertrag Jens Müller (DB IV)</h3>
+          <span class="solution-toggle" id="sol4-toggle">▼</span>
+        </div>
+        <div class="solution-body" id="sol4">
+          <div style="padding-top:16px">
+            <div class="step">
+              <div class="step-number">1</div>
+              <div class="step-content">
+                <div class="step-title">Konditionsbeitrag (DB I) – Zinsmarge</div>
+                <div class="step-formula">
+                  Kundenzinssatz: 4,90 % p.a.<br>
+                  − GKM-Satz 2 Jahre: 2,90 % p.a.<br>
+                  = Konditionsbeitrag: 2,00 % p.a.<br>
+                  in EUR: 80.000 × 2,00 % = <strong>1.600,00 EUR p.a.</strong>
+                </div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-number">2</div>
+              <div class="step-content">
+                <div class="step-title">DB II (nach Risikokosten)</div>
+                <div class="step-formula">
+                  Risikokosten: 80.000 × 0,30 % = 240,00 EUR<br>
+                  DB II: 1.600 − 240 = <strong>1.360,00 EUR p.a.</strong>
+                </div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-number">3</div>
+              <div class="step-content">
+                <div class="step-title">DB III (nach SEK)</div>
+                <div class="step-formula">
+                  SEK: 80.000 × 0,28 % = 224,00 EUR<br>
+                  DB III: 1.360 − 224 = <strong>1.136,00 EUR p.a.</strong>
+                </div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-number">4</div>
+              <div class="step-content">
+                <div class="step-title">DB IV – Eigenkapitalkosten berücksichtigen</div>
+                <div class="step-formula">
+                  EK-Bedarf: 8 % × 80.000 = 6.400 EUR<br>
+                  EK-Verzinsung: 6.400 × 12,5 % = 800 EUR p.a.<br>
+                  DB IV: 1.136 − 800 + (2 EUR/Monat × 12) = 336 + 24 = <strong>ca. 360 EUR p.a.</strong>
+                </div>
+                <div class="answer-badge">✅ Das Geschäft ist positiv → Darlehen kann vergeben werden!</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LÖSUNG 5: REGIO-BANK SCHEMA -->
+      <div class="solution-card">
+        <div class="solution-header" onclick="toggleSolution('sol5')">
+          <h3>📊 Regio-Bank AG – Gesamtbetriebskalkulation Schema (Anlage 3)</h3>
+          <span class="solution-toggle" id="sol5-toggle">▼</span>
+        </div>
+        <div class="solution-body" id="sol5">
+          <div style="padding-top:16px">
+            <div class="schema-container">
+              <table class="schema-table">
+                <tr>
+                  <th>Position</th>
+                  <th>Betrag (TEUR)</th>
+                  <th>Spanne</th>
+                </tr>
+                <tr><td>Bilanzsumme (GV)</td><td colspan="2">2.562.000 TEUR</td></tr>
+                <tr><td>Zinserträge</td><td>95.182</td><td>3,716 %</td></tr>
+                <tr><td>− Zinsaufwendungen</td><td>−29.034</td><td>−1,134 %</td></tr>
+                <tr class="subtotal-row"><td>= Zinsüberschuss / BZS</td><td>66.148</td><td><strong>2,582 %</strong></td></tr>
+                <tr><td>Provisionsüberschuss</td><td>11.560</td><td><strong>0,451 %</strong></td></tr>
+                <tr><td>− Verwaltungsaufwand</td><td>−46.050</td><td>−1,797 %</td></tr>
+                <tr class="subtotal-row"><td>= Teilbetriebsergebnis</td><td>31.658</td><td></td></tr>
+                <tr><td>Handelsergebnis (4)</td><td>0</td><td>0,000 %</td></tr>
+                <tr><td>Sonstige Ertragsspanne (5)</td><td>−2.780</td><td>−0,109 %</td></tr>
+                <tr><td>Bewertungsergebnis (6)</td><td>−12.700</td><td>−0,496 %</td></tr>
+                <tr class="result-row"><td>= Betriebsergebnis / NGS</td><td>16.178</td><td><strong>0,631 %</strong></td></tr>
+              </table>
+            </div>
+            <div class="highlight-box" style="margin-top:12px">
+              📌 BZS 2,582 % + PrS 0,451 % − BBS 1,797 % = Bruttoertragsspanne 2,924 %<br>
+              Bruttoertragsspanne 2,924 % − Bewertungsspanne 0,496 % − Sonstige 0,109 % − Handelsergebnis 0 % = NGS <strong>0,631 %</strong> ✅
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LÖSUNG 6: FRAU SOMMER TERMINEINLAGE -->
+      <div class="solution-card">
+        <div class="solution-header" onclick="toggleSolution('sol6')">
+          <h3>💰 Frau Sommer – Termineinlage Preisgrenze (LF11-LS06)</h3>
+          <span class="solution-toggle" id="sol6-toggle">▼</span>
+        </div>
+        <div class="solution-body" id="sol6">
+          <div style="padding-top:16px">
+            <div class="step">
+              <div class="step-number">a</div>
+              <div class="step-content">
+                <div class="step-title">Preisobergrenze für Sechs-Monats-Termineinlage 120.000 EUR</div>
+                <div class="step-formula">
+                  Alternativzinssatz GKM: 4,75 % p.a.<br>
+                  Standard-Einzelkosten: 60,00 EUR fix<br>
+                  SEK in % p.a.: 60 ÷ 120.000 × 100 × 365/180 = 0,10139 % p.a.<br>
+                  Preisobergrenze = 4,75 % − 0,10 % = <strong>ca. 4,65 % p.a.</strong>
+                </div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-number">b</div>
+              <div class="step-content">
+                <div class="step-title">Deckungsbeitrag Geldanlage 25.000 EUR (3 Monate)</div>
+                <div class="step-formula">
+                  Kundenzinssatz: berechneter Satz aus Aufgabe<br>
+                  − GKM-Satz: Tagesgeld oder 90-Tage entsprechend<br>
+                  = Konditionsbeitrag (DB I)<br>
+                  − SEK: 90,00 EUR<br>
+                  = DB II/III (Marktergebnis)
+                </div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-number">c</div>
+              <div class="step-content">
+                <div class="step-title">Zinssatz bei 50.000 EUR / 200.000 EUR / 200.000 EUR Anlage</div>
+                <div class="step-formula">
+                  SEK-Umrechnung je Anlagebeträge:<br>
+                  50.000 EUR: 60/50.000 × 100 × 365/90 = 0,487 % → POG = 2,25 − 0,487 = 1,763 %<br>
+                  200.000 EUR: 60/200.000 × 100 × 365/90 = 0,122 % → POG = 2,25 − 0,12 = 2,13 %<br>
+                  200.000 EUR ab 200.000: wie oben → 4,495 % (höherer Alternativsatz gilt!)
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ════════════════════════════════════════════════════ -->
+    <!-- PAGE: RECHENAUFGABEN 🔥 -->
+    <!-- ════════════════════════════════════════════════════ -->
+    <div class="page" id="page-rechenaufgaben">
+      <div class="section-header">
+        <h2>🔥 Rechenaufgaben zum Selbstüben</h2>
+        <p>Gib dein Ergebnis ein – sofortiges Feedback mit Schritt-für-Schritt-Lösung!</p>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap">
+        <button class="btn" onclick="filterRA('alle')" id="ra-btn-alle">Alle (10 Aufgaben)</button>
+        <button class="btn btn-secondary" onclick="filterRA('gbk')" id="ra-btn-gbk">📊 GBK & Spannen</button>
+        <button class="btn btn-secondary" onclick="filterRA('preis')" id="ra-btn-preis">💰 Preisgrenzen</button>
+        <button class="btn btn-secondary" onclick="filterRA('db')" id="ra-btn-db">🔢 Deckungsbeitrag</button>
+      </div>
+
+      <div class="solution-card ra-card" data-cat="gbk">
+        <div class="solution-header" onclick="toggleSolution('ra1')">
+          <h3>📊 Aufgabe 1: Zinsüberschuss &amp; BZS berechnen <span class="card-tag tag-blue" style="font-size:11px;margin-left:8px">GBK</span></h3>
+          <span class="solution-toggle" id="ra1-toggle">▼</span>
+        </div>
+        <div class="solution-body" id="ra1">
+          <div class="theory-block" style="margin-top:16px;margin-bottom:0">
+            <p><strong>Gegeben (alle Werte in TEUR):</strong></p>
+            <table class="rating-table" style="margin:12px 0">
+              <tr><td>Zinserträge Kredit- &amp; Geldmarkt</td><td><strong>145.200</strong></td></tr>
+              <tr><td>Zinserträge festverzinsliche WP</td><td><strong>12.800</strong></td></tr>
+              <tr><td>Laufende Erträge Aktien &amp; Beteiligungen</td><td><strong>4.500</strong></td></tr>
+              <tr><td>Zinsaufwendungen</td><td><strong>98.300</strong></td></tr>
+              <tr><td>Bilanzsumme (GV)</td><td><strong>3.200.000</strong></td></tr>
+              <tr><td>Branche BZS</td><td><strong>2,10 %</strong></td></tr>
+            </table>
+            <p>Ermittle: a) ZÜ &nbsp;&nbsp; b) BZS &nbsp;&nbsp; c) Beurteilung ggü. Branche</p>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;margin:16px 0;flex-wrap:wrap">
+            <input type="number" step="0.001" id="ra1-input-zue" placeholder="ZÜ in TEUR eingeben..." style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-size:14px;outline:none;flex:1;min-width:200px">
+            <button class="btn" onclick="checkRA1()">✓ Prüfen</button>
+          </div>
+          <div id="ra1-feedback"></div>
+          <div id="ra1-solution" style="display:none">
+            <div class="step"><div class="step-number">a</div><div class="step-content">
+              <div class="step-title">Zinsüberschuss (ZÜ)</div>
+              <div class="step-formula">ZÜ = ZE + laufende Erträge − ZA<br>ZÜ = (145.200 + 12.800) + 4.500 − 98.300<br>ZÜ = 162.500 + 4.500 − 98.300 = <strong>64.200 TEUR</strong></div>
+            </div></div>
+            <div class="step"><div class="step-number">b</div><div class="step-content">
+              <div class="step-title">Bruttozinsspanne</div>
+              <div class="step-formula">BZS = 64.200 × 100 ÷ 3.200.000 = <strong>2,006 %</strong></div>
+            </div></div>
+            <div class="step"><div class="step-number">c</div><div class="step-content">
+              <div class="step-title">Beurteilung</div>
+              <div class="step-text">2,006 % − 2,10 % = <strong>−0,094 %-Punkte</strong> → Bank liegt UNTER dem Branchenschnitt. Zinsmarge leicht unterdurchschnittlich.</div>
+            </div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="solution-card ra-card" data-cat="gbk">
+        <div class="solution-header" onclick="toggleSolution('ra2')">
+          <h3>📊 Aufgabe 2: Vollständige GBK mit allen Spannen <span class="card-tag tag-blue" style="font-size:11px;margin-left:8px">GBK</span></h3>
+          <span class="solution-toggle" id="ra2-toggle">▼</span>
+        </div>
+        <div class="solution-body" id="ra2">
+          <div class="theory-block" style="margin-top:16px;margin-bottom:0">
+            <p><strong>Stadtsparkasse Musterstadt (TEUR):</strong></p>
+            <table class="rating-table" style="margin:12px 0">
+              <tr><td>Zinserträge gesamt</td><td>210.000</td></tr><tr><td>Laufende Erträge Aktien/Beteil.</td><td>8.200</td></tr>
+              <tr><td>Zinsaufwendungen</td><td>134.500</td></tr><tr><td>Provisionserträge</td><td>42.300</td></tr>
+              <tr><td>Provisionsaufwendungen</td><td>5.100</td></tr><tr><td>Personalaufwand</td><td>68.400</td></tr>
+              <tr><td>Andere Verwaltungsaufwendungen</td><td>31.200</td></tr><tr><td>Abschreibungen Sachanlagen</td><td>4.800</td></tr>
+              <tr><td>Handelsergebnis</td><td>+1.200</td></tr><tr><td>Sonstige betr. Erträge/Aufwendungen</td><td>+3.500</td></tr>
+              <tr><td>Bewertungsergebnis (Risikovorsorge)</td><td>−22.000</td></tr><tr><td>Geschäftsvolumen</td><td>7.850.000</td></tr>
+            </table>
+            <p>Ermittle das vollständige GBK-Schema inkl. aller Spannen. Was fällt auf?</p>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;margin:16px 0;flex-wrap:wrap">
+            <input type="number" step="0.001" id="ra2-ngs" placeholder="Nettogewinnspanne in % eingeben..." style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-size:14px;outline:none;flex:1;min-width:200px">
+            <button class="btn" onclick="checkRA2()">✓ NGS prüfen</button>
+          </div>
+          <div id="ra2-feedback"></div>
+          <div id="ra2-solution" style="display:none">
+            <div class="step"><div class="step-number">1</div><div class="step-content"><div class="step-title">ZÜ und PrÜ</div><div class="step-formula">ZÜ = 210.000 + 8.200 − 134.500 = <strong>83.700 TEUR</strong><br>PrÜ = 42.300 − 5.100 = <strong>37.200 TEUR</strong></div></div></div>
+            <div class="step"><div class="step-number">2</div><div class="step-content"><div class="step-title">VA &amp; TBE</div><div class="step-formula">VA = 68.400 + 31.200 + 4.800 = <strong>104.400 TEUR</strong><br>TBE = 83.700 + 37.200 − 104.400 = <strong>16.500 TEUR</strong></div></div></div>
+            <div class="step"><div class="step-number">3</div><div class="step-content"><div class="step-title">Betriebsergebnis &amp; Spannen</div><div class="step-formula">BE = 16.500 + 1.200 + 3.500 − 22.000 = <strong>−800 TEUR ⚠️ VERLUST!</strong><br>BZS = 83.700 / 7.850.000 × 100 = <strong>1,066 %</strong><br>PrS = 37.200 / 7.850.000 × 100 = <strong>0,474 %</strong><br>BBS = 104.400 / 7.850.000 × 100 = <strong>1,330 %</strong><br>NGS = −800 / 7.850.000 × 100 = <strong>−0,010 %</strong></div><div class="answer-badge" style="background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.3);color:#fca5a5">⚠️ Negatives BE! Bewertungsergebnis frisst den gesamten Gewinn.</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="solution-card ra-card" data-cat="preis">
+        <div class="solution-header" onclick="toggleSolution('ra3')">
+          <h3>💰 Aufgabe 3: Preisuntergrenze Ratenkredit mit EK-Kosten <span class="card-tag tag-purple" style="font-size:11px;margin-left:8px">Aktiv</span></h3>
+          <span class="solution-toggle" id="ra3-toggle">▼</span>
+        </div>
+        <div class="solution-body" id="ra3">
+          <div class="theory-block" style="margin-top:16px;margin-bottom:0">
+            <p>Herr Maier (Ratingklasse 4) beantragt Ratenkredit <strong>25.000 EUR</strong>, 4 Jahre:</p>
+            <table class="rating-table" style="margin:12px 0">
+              <tr><td>GKM-Satz (4 Jahre)</td><td>3,20 % p.a.</td></tr><tr><td>Risikokostensatz</td><td>0,75 % p.a.</td></tr>
+              <tr><td>Standardeinzelkosten</td><td>2,75 % p.a.</td></tr><tr><td>Overheadkostenzuschlag</td><td>60 % der SEK</td></tr>
+              <tr><td>Gewinnzuschlag</td><td>0,40 % p.a.</td></tr><tr><td>EK-Anforderung Basel III</td><td>8 %</td></tr>
+              <tr><td>EK-Verzinsung</td><td>12,5 % p.a.</td></tr>
+            </table>
+            <p>Ermittle: a) EK-Kosten in % p.a. &nbsp;&nbsp; b) Preisuntergrenze &nbsp;&nbsp; c) Normalpreis</p>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;margin:16px 0;flex-wrap:wrap">
+            <input type="number" step="0.01" id="ra3-input" placeholder="Preisuntergrenze in % p.a. ..." style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-size:14px;outline:none;flex:1;min-width:200px">
+            <button class="btn" onclick="checkRA3()">✓ Prüfen</button>
+          </div>
+          <div id="ra3-feedback"></div>
+          <div id="ra3-solution" style="display:none">
+            <div class="step"><div class="step-number">a</div><div class="step-content"><div class="step-title">EK-Kosten &amp; Overhead</div><div class="step-formula">Overhead = 60 % × 2,75 % = <strong>1,65 % p.a.</strong><br>EK-Betrag = 8 % × 25.000 = 2.000 EUR<br>EK-Zinsen = 2.000 × 12,5 % = 250 EUR p.a.<br>EK-Satz = 250 ÷ 25.000 × 100 = <strong>1,00 % p.a.</strong></div></div></div>
+            <div class="step"><div class="step-number">b</div><div class="step-content"><div class="step-title">Preisuntergrenze</div><div class="step-formula">PUG = 3,20 + 0,75 + 2,75 + 1,65 + 1,00 = <strong>9,35 % p.a.</strong></div></div></div>
+            <div class="step"><div class="step-number">c</div><div class="step-content"><div class="step-title">Normalpreis</div><div class="step-formula">Normalpreis = 9,35 % + 0,40 % = <strong>9,75 % p.a.</strong></div><div class="answer-badge">✅ Mind. 9,35 % | Empfohlen: 9,75 %</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="solution-card ra-card" data-cat="db">
+        <div class="solution-header" onclick="toggleSolution('ra4')">
+          <h3>🔢 Aufgabe 4: Deckungsbeitrag Immobiliendarlehen (DB I–IV) <span class="card-tag tag-purple" style="font-size:11px;margin-left:8px">DB-Rechnung</span></h3>
+          <span class="solution-toggle" id="ra4-toggle">▼</span>
+        </div>
+        <div class="solution-body" id="ra4">
+          <div class="theory-block" style="margin-top:16px;margin-bottom:0">
+            <p>Familie Schmidt – Immobiliendarlehen <strong>180.000 EUR</strong>, 10 Jahre:</p>
+            <table class="rating-table" style="margin:12px 0">
+              <tr><td>Kundenzinssatz</td><td>3,85 % p.a.</td></tr><tr><td>GKM-Satz (10 Jahre)</td><td>2,40 % p.a.</td></tr>
+              <tr><td>Risikokostensatz</td><td>0,30 % p.a.</td></tr><tr><td>Standardeinzelkosten</td><td>0,28 % p.a.</td></tr>
+              <tr><td>Overheadkosten</td><td>0,40 % p.a.</td></tr><tr><td>EK-Anforderung</td><td>8 %</td></tr>
+              <tr><td>EK-Verzinsung</td><td>12,5 % p.a.</td></tr>
+            </table>
+            <p>Ermittle DB I bis DB IV in EUR p.a. Lohnt sich das Geschäft?</p>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;margin:16px 0;flex-wrap:wrap">
+            <input type="number" step="1" id="ra4-input" placeholder="DB IV in EUR p.a. eingeben..." style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-size:14px;outline:none;flex:1;min-width:200px">
+            <button class="btn" onclick="checkRA4()">✓ DB IV prüfen</button>
+          </div>
+          <div id="ra4-feedback"></div>
+          <div id="ra4-solution" style="display:none">
+            <div class="step"><div class="step-number">1</div><div class="step-content"><div class="step-title">DB I – Konditionsbeitrag</div><div class="step-formula">3,85 % − 2,40 % = 1,45 % p.a.<br>180.000 × 1,45 % = <strong>2.610 EUR p.a.</strong></div></div></div>
+            <div class="step"><div class="step-number">2</div><div class="step-content"><div class="step-title">DB II – nach Risikokosten</div><div class="step-formula">Risikokosten: 180.000 × 0,30 % = 540 EUR<br>DB II = 2.610 − 540 = <strong>2.070 EUR p.a.</strong></div></div></div>
+            <div class="step"><div class="step-number">3</div><div class="step-content"><div class="step-title">DB III – nach SEK</div><div class="step-formula">SEK: 180.000 × 0,28 % = 504 EUR<br>DB III = 2.070 − 504 = <strong>1.566 EUR p.a.</strong></div></div></div>
+            <div class="step"><div class="step-number">4</div><div class="step-content"><div class="step-title">DB IV – nach Overhead &amp; EK</div><div class="step-formula">Overhead: 180.000 × 0,40 % = 720 EUR<br>EK: 8 % × 180.000 = 14.400 × 12,5 % = 1.800 EUR<br>DB IV = 1.566 − 720 − 1.800 = <strong>−954 EUR ❌</strong></div><div class="answer-badge" style="background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.3);color:#fca5a5">❌ Nicht profitabel bei 3,85 %! Mindestzins ≈ 4,38 %</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="solution-card ra-card" data-cat="db">
+        <div class="solution-header" onclick="toggleSolution('ra5')">
+          <h3>🔢 Aufgabe 5: Risikokostensatz + KK-Deckungsbeitrag <span class="card-tag tag-purple" style="font-size:11px;margin-left:8px">DB-Rechnung</span></h3>
+          <span class="solution-toggle" id="ra5-toggle">▼</span>
+        </div>
+        <div class="solution-body" id="ra5">
+          <div class="theory-block" style="margin-top:16px;margin-bottom:0">
+            <p><strong>Genossenschaftsbank Alpenland</strong> – Risikokostensatz &amp; KK-Konto Müller GmbH:</p>
+            <table class="rating-table" style="margin:12px 0">
+              <tr><td>Abschreibungen (10 J.)</td><td>3.240.000 EUR</td></tr><tr><td>Ausfälle (10 J.)</td><td>2.880.000 EUR</td></tr>
+              <tr><td>Ø Forderungsbestand p.a.</td><td>28.500.000 EUR</td></tr>
+            </table>
+            <p>KK-Konto Müller GmbH:</p>
+            <table class="rating-table" style="margin:8px 0">
+              <tr><td>Ø Soll-Volumen</td><td>45.000 EUR</td></tr><tr><td>Ø Haben-Volumen</td><td>8.000 EUR</td></tr>
+              <tr><td>Kundenzins Soll</td><td>8,5 % p.a.</td></tr><tr><td>Kundenzins Haben</td><td>0,25 % p.a.</td></tr>
+              <tr><td>GKM aktiv</td><td>3,10 % p.a.</td></tr><tr><td>GKM passiv</td><td>2,30 % p.a.</td></tr>
+              <tr><td>SEK gesamt</td><td>1.540 EUR</td></tr><tr><td>Gebühren gesamt</td><td>680 EUR</td></tr>
+            </table>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;margin:16px 0;flex-wrap:wrap">
+            <input type="number" step="0.01" id="ra5-risko" placeholder="Risikokostensatz in % p.a." style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-size:14px;outline:none;flex:1;min-width:150px">
+            <input type="number" step="1" id="ra5-db3" placeholder="DB III in EUR" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-size:14px;outline:none;flex:1;min-width:150px">
+            <button class="btn" onclick="checkRA5()">✓ Prüfen</button>
+          </div>
+          <div id="ra5-feedback"></div>
+          <div id="ra5-solution" style="display:none">
+            <div class="step"><div class="step-number">a</div><div class="step-content"><div class="step-title">Risikokostensatz</div><div class="step-formula">Ø Abschreibungen p.a. = 3.240.000 ÷ 10 = 324.000 EUR<br>Risikokostensatz = 324.000 ÷ 28.500.000 × 100 = <strong>1,14 % p.a.</strong></div></div></div>
+            <div class="step"><div class="step-number">b</div><div class="step-content"><div class="step-title">DB I</div><div class="step-formula">Aktiv: 45.000×8,5%=3.825 − 45.000×3,1%=1.395 = 2.430 EUR<br>Passiv: 8.000×2,3%=184 − 8.000×0,25%=20 = 164 EUR<br>DB I = 2.430 + 164 + 680 = <strong>3.274 EUR</strong></div></div></div>
+            <div class="step"><div class="step-number">c</div><div class="step-content"><div class="step-title">DB II &amp; III</div><div class="step-formula">Risikokosten: 45.000 × 1,14 % = 513 EUR<br>DB II = 3.274 − 513 = <strong>2.761 EUR</strong><br>DB III = 2.761 − 1.540 = <strong>1.221 EUR ✅</strong></div><div class="answer-badge">✅ Positives Ergebnis – KK-Konto ist profitabel!</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="solution-card ra-card" data-cat="gbk">
+        <div class="solution-header" onclick="toggleSolution('ra6')">
+          <h3>📊 Aufgabe 6: Provisionsspanne &amp; Maßnahmen <span class="card-tag tag-blue" style="font-size:11px;margin-left:8px">GBK</span></h3>
+          <span class="solution-toggle" id="ra6-toggle">▼</span>
+        </div>
+        <div class="solution-body" id="ra6">
+          <div class="theory-block" style="margin-top:16px;margin-bottom:0">
+            <p><strong>Volksbank Rheinland AG</strong> – Auszug GuV (TEUR):</p>
+            <table class="rating-table" style="margin:12px 0">
+              <tr><td>Provisionserträge</td><td>58.400</td></tr><tr><td>Provisionsaufwendungen</td><td>9.200</td></tr>
+              <tr><td>Bilanzsumme</td><td>4.120.000</td></tr><tr><td>Branche PrS</td><td>1,15 %</td></tr>
+            </table>
+            <p>Ermittle PrÜ, PrS, Beurteilung. Nenne 2 Maßnahmen zur Verbesserung.</p>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;margin:16px 0;flex-wrap:wrap">
+            <input type="number" step="0.001" id="ra6-input" placeholder="Provisionsspanne in % eingeben..." style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-size:14px;outline:none;flex:1;min-width:200px">
+            <button class="btn" onclick="checkRA6()">✓ Prüfen</button>
+          </div>
+          <div id="ra6-feedback"></div>
+          <div id="ra6-solution" style="display:none">
+            <div class="step"><div class="step-number">1</div><div class="step-content"><div class="step-title">PrÜ &amp; PrS</div><div class="step-formula">PrÜ = 58.400 − 9.200 = <strong>49.200 TEUR</strong><br>PrS = 49.200 ÷ 4.120.000 × 100 = <strong>1,194 %</strong></div></div></div>
+            <div class="step"><div class="step-number">2</div><div class="step-content"><div class="step-title">Beurteilung &amp; Maßnahmen</div><div class="step-text">1,194 % > 1,15 % → <strong>+0,044 %-Punkte ÜBER Branche ✅</strong><br><br>Maßnahmen zur weiteren Steigerung:<br>1. Kontoführungsgebühren erhöhen<br>2. Wertpapierberatung intensivieren (mehr Depotgebühren)<br>3. Versicherungsvertrieb ausbauen</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="solution-card ra-card" data-cat="preis">
+        <div class="solution-header" onclick="toggleSolution('ra7')">
+          <h3>💰 Aufgabe 7: Preisobergrenze Termineinlage (Passivgeschäft) <span class="card-tag tag-gold" style="font-size:11px;margin-left:8px">Passiv</span></h3>
+          <span class="solution-toggle" id="ra7-toggle">▼</span>
+        </div>
+        <div class="solution-body" id="ra7">
+          <div class="theory-block" style="margin-top:16px;margin-bottom:0">
+            <p>Frau Bergmann legt <strong>80.000 EUR</strong> für <strong>6 Monate (180 Tage)</strong> an:</p>
+            <table class="rating-table" style="margin:12px 0">
+              <tr><td>GKM-Satz (6-Monats-Geld)</td><td>3,50 % p.a.</td></tr>
+              <tr><td>Standard-Einzelkosten (fix)</td><td>60,00 EUR</td></tr>
+              <tr><td>Gewinnzuschlag Bank</td><td>0,30 % p.a.</td></tr>
+            </table>
+            <p>a) Preisobergrenze ohne Gewinn &nbsp;&nbsp; b) Angebotszins mit Gewinnabzug</p>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;margin:16px 0;flex-wrap:wrap">
+            <input type="number" step="0.001" id="ra7-input" placeholder="Preisobergrenze in % p.a. ..." style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-size:14px;outline:none;flex:1;min-width:200px">
+            <button class="btn" onclick="checkRA7()">✓ Prüfen</button>
+          </div>
+          <div id="ra7-feedback"></div>
+          <div id="ra7-solution" style="display:none">
+            <div class="step"><div class="step-number">a</div><div class="step-content"><div class="step-title">SEK in % p.a.</div><div class="step-formula">SEK % = 60 ÷ 80.000 × 100 × 365 ÷ 180 = 0,075 % × 2,028 = <strong>0,152 % p.a.</strong></div></div></div>
+            <div class="step"><div class="step-number">b</div><div class="step-content"><div class="step-title">Preisobergrenze</div><div class="step-formula">POG = 3,50 % − 0,152 % = <strong>3,348 % p.a.</strong></div></div></div>
+            <div class="step"><div class="step-number">c</div><div class="step-content"><div class="step-title">Angebotszins</div><div class="step-formula">Angebotszins = 3,348 % − 0,30 % = <strong>3,048 % p.a.</strong></div><div class="answer-badge">✅ Bank bietet max. 3,048 % p.a. an</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="solution-card ra-card" data-cat="gbk">
+        <div class="solution-header" onclick="toggleSolution('ra8')">
+          <h3>📊 Aufgabe 8: GJ vs. VJ Vergleich – Analyse <span class="card-tag tag-blue" style="font-size:11px;margin-left:8px">Analyse</span></h3>
+          <span class="solution-toggle" id="ra8-toggle">▼</span>
+        </div>
+        <div class="solution-body" id="ra8">
+          <div class="theory-block" style="margin-top:16px;margin-bottom:0">
+            <p><strong>Kreisbank AG</strong> – GJ vs. VJ (TEUR):</p>
+            <table class="rating-table" style="margin:12px 0">
+              <tr><th>Position</th><th>GJ</th><th>VJ</th></tr>
+              <tr><td>Zinsüberschuss</td><td>78.400</td><td>82.100</td></tr>
+              <tr><td>Provisionsüberschuss</td><td>21.500</td><td>19.800</td></tr>
+              <tr><td>Verwaltungsaufwand</td><td>55.200</td><td>51.400</td></tr>
+              <tr><td>Bewertungsergebnis</td><td>−18.500</td><td>−8.200</td></tr>
+              <tr><td>GV (Bilanzsumme)</td><td>3.850.000</td><td>3.620.000</td></tr>
+            </table>
+            <p>Berechne BE &amp; NGS für GJ und VJ. Erkläre warum das GJ schlechter ist.</p>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;margin:16px 0;flex-wrap:wrap">
+            <input type="number" step="0.001" id="ra8-gj" placeholder="NGS GJ in % ..." style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-size:14px;outline:none;flex:1;min-width:150px">
+            <input type="number" step="0.001" id="ra8-vj" placeholder="NGS VJ in % ..." style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-size:14px;outline:none;flex:1;min-width:150px">
+            <button class="btn" onclick="checkRA8()">✓ Prüfen</button>
+          </div>
+          <div id="ra8-feedback"></div>
+          <div id="ra8-solution" style="display:none">
+            <div class="step"><div class="step-number">1</div><div class="step-content"><div class="step-title">Geschäftsjahr</div><div class="step-formula">TBE = 78.400+21.500−55.200 = 44.700<br>BE = 44.700−18.500 = <strong>26.200 TEUR</strong><br>NGS = 26.200÷3.850.000×100 = <strong>0,681 %</strong></div></div></div>
+            <div class="step"><div class="step-number">2</div><div class="step-content"><div class="step-title">Vorjahr</div><div class="step-formula">TBE = 82.100+19.800−51.400 = 50.500<br>BE = 50.500−8.200 = <strong>42.300 TEUR</strong><br>NGS = 42.300÷3.620.000×100 = <strong>1,169 %</strong></div></div></div>
+            <div class="step"><div class="step-number">3</div><div class="step-content"><div class="step-title">Analyse</div><div class="step-text">BE sank um 16.100 TEUR (−38%). Ursachen:<br>1. Bewertungsergebnis: −8.200 → −18.500 (−10.300 mehr Risikovorsorge)<br>2. Zinsüberschuss gesunken: −3.700 TEUR<br>3. Verwaltungsaufwand gestiegen: +3.800 TEUR</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="solution-card ra-card" data-cat="preis">
+        <div class="solution-header" onclick="toggleSolution('ra9')">
+          <h3>💰 Aufgabe 9: Termineinlage – Höchstzins berechnen <span class="card-tag tag-gold" style="font-size:11px;margin-left:8px">Passiv</span></h3>
+          <span class="solution-toggle" id="ra9-toggle">▼</span>
+        </div>
+        <div class="solution-body" id="ra9">
+          <div class="theory-block" style="margin-top:16px;margin-bottom:0">
+            <p>Herr Becker: <strong>50.000 EUR</strong>, <strong>3 Monate (90 Tage)</strong>:</p>
+            <table class="rating-table" style="margin:12px 0">
+              <tr><td>GKM-Satz 90-Tage-Geld</td><td>2,25 % p.a.</td></tr>
+              <tr><td>Standard-Einzelkosten (fix)</td><td>90,00 EUR</td></tr>
+              <tr><td>Overheadkosten</td><td>60 % der SEK</td></tr>
+            </table>
+            <p>Welchen Höchstzins kann die Bank ohne Verlust anbieten (ohne Gewinn)?</p>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;margin:16px 0;flex-wrap:wrap">
+            <input type="number" step="0.001" id="ra9-input" placeholder="Max. Kundenzinssatz in % p.a. ..." style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-size:14px;outline:none;flex:1;min-width:200px">
+            <button class="btn" onclick="checkRA9()">✓ Prüfen</button>
+          </div>
+          <div id="ra9-feedback"></div>
+          <div id="ra9-solution" style="display:none">
+            <div class="step"><div class="step-number">a</div><div class="step-content"><div class="step-title">SEK in % p.a.</div><div class="step-formula">SEK % = 90 ÷ 50.000 × 100 × 365 ÷ 90 = 0,18 % × 4,056 = <strong>0,730 % p.a.</strong></div></div></div>
+            <div class="step"><div class="step-number">b</div><div class="step-content"><div class="step-title">Overhead &amp; POG</div><div class="step-formula">Overhead = 60 % × 0,730 % = 0,438 %<br>POG = 2,25 % − 0,730 % − 0,438 % = <strong>1,082 % p.a.</strong></div><div class="answer-badge">✅ Max. ca. 1,08 % p.a. ohne Verlust</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="solution-card ra-card" data-cat="gbk">
+        <div class="solution-header" onclick="toggleSolution('ra10')">
+          <h3>📊 Aufgabe 10: GBK aus komplexen GuV-Daten – SCHWER 💪 <span class="card-tag tag-red" style="font-size:11px;margin-left:8px">Schwer</span></h3>
+          <span class="solution-toggle" id="ra10-toggle">▼</span>
+        </div>
+        <div class="solution-body" id="ra10">
+          <div class="theory-block" style="margin-top:16px;margin-bottom:0">
+            <p><strong>Sparda-Bank Nord AG</strong> – GuV-Daten (TEUR). Beachte: Personalaufwand ist aufgeteilt!</p>
+            <table class="rating-table" style="margin:12px 0">
+              <tr><td>Zinserträge Kreditgeschäfte</td><td>89.200</td></tr><tr><td>Zinserträge festverzinsliche WP</td><td>11.600</td></tr>
+              <tr><td>Lfd. Erträge Aktien</td><td>2.100</td></tr><tr><td>Lfd. Erträge Beteiligungen</td><td>1.400</td></tr>
+              <tr><td>Zinsaufwendungen</td><td>54.800</td></tr><tr><td>Provisionserträge</td><td>28.900</td></tr>
+              <tr><td>Provisionsaufwendungen</td><td>3.600</td></tr><tr><td>Löhne &amp; Gehälter</td><td>38.200</td></tr>
+              <tr><td>Soziale Abgaben/Altersversorgung</td><td>9.400</td></tr><tr><td>Andere Verwaltungsaufwendungen</td><td>18.700</td></tr>
+              <tr><td>Abschreibungen Sachanlagen</td><td>3.100</td></tr><tr><td>Sonstige betr. Erträge</td><td>4.200</td></tr>
+              <tr><td>Sonstige betr. Aufwendungen</td><td>2.800</td></tr><tr><td>Abschreibungen auf Forderungen</td><td>9.600</td></tr>
+              <tr><td>Zuführung zu Rückstellungen</td><td>1.400</td></tr><tr><td>Bilanzsumme (GV)</td><td>2.890.000</td></tr>
+            </table>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;margin:16px 0;flex-wrap:wrap">
+            <input type="number" step="1" id="ra10-be" placeholder="Betriebsergebnis in TEUR ..." style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-size:14px;outline:none;flex:1;min-width:200px">
+            <button class="btn" onclick="checkRA10()">✓ BE prüfen</button>
+          </div>
+          <div id="ra10-feedback"></div>
+          <div id="ra10-solution" style="display:none">
+            <div class="step"><div class="step-number">1</div><div class="step-content"><div class="step-title">ZÜ</div><div class="step-formula">ZÜ = (89.200+11.600)+(2.100+1.400)−54.800<br>= 100.800+3.500−54.800 = <strong>49.500 TEUR</strong> → BZS = <strong>1,713 %</strong></div></div></div>
+            <div class="step"><div class="step-number">2</div><div class="step-content"><div class="step-title">PrÜ</div><div class="step-formula">PrÜ = 28.900−3.600 = <strong>25.300 TEUR</strong> → PrS = <strong>0,875 %</strong></div></div></div>
+            <div class="step"><div class="step-number">3</div><div class="step-content"><div class="step-title">VA (Personalaufwand = Löhne + Soziales!)</div><div class="step-formula">VA = (38.200+9.400)+18.700+3.100 = 47.600+18.700+3.100 = <strong>69.400 TEUR</strong><br>BBS = <strong>2,400 %</strong></div></div></div>
+            <div class="step"><div class="step-number">4</div><div class="step-content"><div class="step-title">TBE &amp; BE</div><div class="step-formula">TBE = 49.500+25.300−69.400 = <strong>5.400 TEUR</strong><br>Sonstige: 4.200−2.800 = +1.400<br>Bewertung: −(9.600+1.400) = −11.000<br>BE = 5.400+1.400−11.000 = <strong>−4.200 TEUR ❌</strong><br>NGS = <strong>−0,145 %</strong></div><div class="answer-badge" style="background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.3);color:#fca5a5">❌ Verlust! Forderungsabschreibungen zu hoch!</div></div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════
+let xp = 0;
+let pagesVisited = new Set();
+
+const pageNames = {
+  'home': 'Startseite',
+  'gesamtbetrieb': 'Gesamtbetriebskalkulation',
+  'spannen': 'Spannen & Formeln',
+  'rechner': 'Interaktiver Rechner',
+  'preisgrenzen': 'Preisgrenzen',
+  'deckungsbeitrag': 'Deckungsbeitragsrechnung',
+  'konzern': 'Konzern & Holding',
+  'nachfrage': 'Nachfrage & Elastizität',
+  'boerse': 'Börse & Auktion',
+  'rechenaufgaben': '🔥 Rechenaufgaben',
+  'quiz': 'Quiz (50 Fragen)',
+  'flashcards': 'Karteikarten',
+  'loesungen': 'Lösungsseite ✅'
+};
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => {
+    if (n.getAttribute('onclick') && n.getAttribute('onclick').includes("'" + id + "'")) {
+      n.classList.add('active');
+    }
+  });
+  document.getElementById('topbarTitle').textContent = pageNames[id] || id;
+
+  // XP for visiting pages
+  if (!pagesVisited.has(id)) {
+    pagesVisited.add(id);
+    addXP(10);
+  }
+  updateProgress();
+
+  // Close sidebar on mobile
+  if (window.innerWidth <= 768) {
+    document.getElementById('sidebar').classList.remove('open');
+  }
+
+  // Init quiz if needed
+  if (id === 'quiz' && !quizStarted) {
+    initQuiz();
+  }
+  if (id === 'flashcards') {
+    renderFlashcard();
+  }
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+function addXP(amount) {
+  xp += amount;
+  document.getElementById('xpCount').textContent = xp;
+}
+
+function updateProgress() {
+  const total = Object.keys(pageNames).length;
+  const visited = pagesVisited.size;
+  document.getElementById('mainProgress').style.width = (visited / total * 100) + '%';
+}
+
+// ══════════════════════════════════════════════
+// TABS
+// ══════════════════════════════════════════════
+function switchTab(group, tabId) {
+  const tabs = document.querySelectorAll('.tab');
+  const contents = document.querySelectorAll('.tab-content');
+  const clickedTab = document.getElementById(tabId);
+  if (!clickedTab) return;
+
+  const parent = clickedTab.parentElement;
+  const siblings = parent.querySelectorAll('.tab-content');
+  const tabBtns = parent.previousElementSibling ? parent.previousElementSibling.querySelectorAll('.tab') : null;
+
+  // Find all tabs in current section
+  const allTabs = clickedTab.closest('.page') ? clickedTab.closest('.page').querySelectorAll('.tab') : tabs;
+  const allContents = clickedTab.closest('.page') ? clickedTab.closest('.page').querySelectorAll('.tab-content') : contents;
+
+  allTabs.forEach(t => t.classList.remove('active'));
+  allContents.forEach(c => c.classList.remove('active'));
+
+  // Find the clicked tab button
+  allTabs.forEach(t => {
+    if (t.getAttribute('onclick') && t.getAttribute('onclick').includes(tabId)) {
+      t.classList.add('active');
+    }
+  });
+  clickedTab.classList.add('active');
+}
+
+// ══════════════════════════════════════════════
+// SOLUTION TOGGLES
+// ══════════════════════════════════════════════
+function toggleSolution(id) {
+  const body = document.getElementById(id);
+  const toggle = document.getElementById(id + '-toggle');
+  body.classList.toggle('open');
+  toggle.classList.toggle('open');
+  if (body.classList.contains('open')) addXP(5);
+}
+
+// ══════════════════════════════════════════════
+// GBK CALCULATOR
+// ══════════════════════════════════════════════
+function fmt(n) {
+  return n.toLocaleString('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + ' TEUR';
+}
+
+function fmtPct(n) {
+  return n.toLocaleString('de-DE', { minimumFractionDigits: 3, maximumFractionDigits: 3 }) + ' %';
+}
+
+function calcGBK() {
+  const ze = +document.getElementById('r_ze').value || 0;
+  const laufend = +document.getElementById('r_laufend').value || 0;
+  const za = +document.getElementById('r_za').value || 0;
+  const prE = +document.getElementById('r_prE').value || 0;
+  const prA = +document.getElementById('r_prA').value || 0;
+  const pa = +document.getElementById('r_pa').value || 0;
+  const va = +document.getElementById('r_va').value || 0;
+  const afa = +document.getElementById('r_afa').value || 0;
+  const handel = +document.getElementById('r_handel').value || 0;
+  const sonstige = +document.getElementById('r_sonstige').value || 0;
+  const bewertung = +document.getElementById('r_bewertung').value || 0;
+  const gv = +document.getElementById('r_gv').value || 1;
+
+  const zue = ze + laufend - za;
+  const prue = prE - prA;
+  const vaGes = pa + va + afa;
+  const tbe = zue + prue - vaGes;
+  const be = tbe + handel + sonstige + bewertung;
+
+  const bzs = zue / gv * 100;
+  const prs = prue / gv * 100;
+  const ngs = be / gv * 100;
+
+  document.getElementById('res-ze').textContent = fmt(ze);
+  document.getElementById('res-laufend').textContent = '+' + fmt(laufend);
+  document.getElementById('res-za').textContent = '−' + fmt(za);
+  document.getElementById('res-zue').textContent = fmt(zue);
+  document.getElementById('res-prue').textContent = fmt(prue);
+  document.getElementById('res-va').textContent = '−' + fmt(vaGes);
+  const tbeEl = document.getElementById('res-tbe');
+  tbeEl.textContent = fmt(tbe);
+  tbeEl.className = 'val ' + (tbe >= 0 ? 'good' : 'bad');
+  document.getElementById('res-handel').textContent = (handel >= 0 ? '+' : '') + fmt(handel);
+  document.getElementById('res-sonstige').textContent = (sonstige >= 0 ? '+' : '') + fmt(sonstige);
+  const bewEl = document.getElementById('res-bewertung');
+  bewEl.textContent = (bewertung >= 0 ? '+' : '') + fmt(bewertung);
+  bewEl.className = 'val ' + (bewertung >= 0 ? 'good' : 'bad');
+
+  const beEl = document.getElementById('res-be');
+  beEl.textContent = fmt(be);
+  beEl.style.color = be >= 0 ? 'var(--green)' : 'var(--red)';
+
+  document.getElementById('res-bzs').textContent = fmtPct(bzs);
+  document.getElementById('res-prs').textContent = fmtPct(prs);
+  document.getElementById('res-ngs').textContent = fmtPct(ngs);
+
+  const result = document.getElementById('gbk-result');
+  result.classList.add('show');
+
+  addXP(15);
+}
+
+function loadNeckarbank() {
+  document.getElementById('r_ze').value = 258300;
+  document.getElementById('r_laufend').value = 73900; // 66300+7600
+  document.getElementById('r_za').value = 228600;
+  document.getElementById('r_prE').value = 30600;
+  document.getElementById('r_prA').value = 2100;
+  document.getElementById('r_pa').value = 58200;
+  document.getElementById('r_va').value = 27300;
+  document.getElementById('r_afa').value = 5600;
+  document.getElementById('r_handel').value = 0;
+  document.getElementById('r_sonstige').value = 0;
+  document.getElementById('r_bewertung').value = -18900;
+  document.getElementById('r_gv').value = 6464700;
+  document.getElementById('res-branchenvergleich').style.display = 'block';
+}
+
+function loadRottweiler() {
+  document.getElementById('r_ze').value = 102460;
+  document.getElementById('r_laufend').value = 7200;
+  document.getElementById('r_za').value = 13880;
+  document.getElementById('r_prE').value = 37440;
+  document.getElementById('r_prA').value = 3230;
+  document.getElementById('r_pa').value = 49380;
+  document.getElementById('r_va').value = 27580;
+  document.getElementById('r_afa').value = 3430;
+  document.getElementById('r_handel').value = 0;
+  document.getElementById('r_sonstige').value = 1810;
+  document.getElementById('r_bewertung').value = -7460;
+  document.getElementById('r_gv').value = 4915910;
+  document.getElementById('res-branchenvergleich').style.display = 'none';
+}
+
+// ══════════════════════════════════════════════
+// PREISGRENZE RECHNER
+// ══════════════════════════════════════════════
+function calcPreisgrenze() {
+  const gkm = +document.getElementById('pg_gkm').value || 0;
+  const risko = +document.getElementById('pg_risko').value || 0;
+  const sek = +document.getElementById('pg_sek').value || 0;
+  const overhead = +document.getElementById('pg_overhead').value || 0;
+  const ek = +document.getElementById('pg_ek').value || 0;
+  const gewinn = +document.getElementById('pg_gewinn').value || 0;
+
+  const pug = gkm + risko + sek + overhead + ek;
+  const normalpreis = pug + gewinn;
+
+  document.getElementById('pg-res-gkm').textContent = gkm.toFixed(2) + ' %';
+  document.getElementById('pg-res-risko').textContent = '+' + risko.toFixed(2) + ' %';
+  document.getElementById('pg-res-sek').textContent = '+' + sek.toFixed(2) + ' %';
+  document.getElementById('pg-res-overhead').textContent = '+' + overhead.toFixed(2) + ' %';
+  document.getElementById('pg-res-ek').textContent = '+' + ek.toFixed(2) + ' %';
+  document.getElementById('pg-res-total').textContent = pug.toFixed(2) + ' % p.a.';
+  document.getElementById('pg-res-gewinn').textContent = normalpreis.toFixed(2) + ' % p.a.';
+
+  document.getElementById('pg-result').classList.add('show');
+  addXP(10);
+}
+
+// ══════════════════════════════════════════════
+// DECKUNGSBEITRAG RECHNER
+// ══════════════════════════════════════════════
+function calcDB() {
+  const soll = +document.getElementById('db_soll').value || 0;
+  const haben = +document.getElementById('db_haben').value || 0;
+  const kzSoll = +document.getElementById('db_kzSoll').value / 100;
+  const kzHaben = +document.getElementById('db_kzHaben').value / 100;
+  const gkmA = +document.getElementById('db_gkmAktiv').value / 100;
+  const gkmP = +document.getElementById('db_gkmPassiv').value / 100;
+  const risko = +document.getElementById('db_risko').value / 100;
+  const sek = +document.getElementById('db_sek').value || 0;
+  const grundpreis = +document.getElementById('db_grundpreis').value || 0;
+  const buchungen = +document.getElementById('db_buchungen').value || 0;
+  const kontoauszug = +document.getElementById('db_kontoauszug').value || 0;
+
+  const zinseS = soll * kzSoll;
+  const gkmKosten = soll * gkmA;
+  const kondA = zinseS - gkmKosten;
+
+  const gkmErloeH = haben * gkmP;
+  const zinsH = haben * kzHaben;
+  const kondP = gkmErloeH - zinsH;
+
+  const gebuehren = grundpreis + buchungen + kontoauszug;
+
+  const db1 = kondA + kondP + gebuehren;
+  const rikoKosten = soll * risko;
+  const db2 = db1 - rikoKosten;
+  const db3 = db2 - sek;
+
+  const fmtE = n => n.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' EUR';
+
+  document.getElementById('db-r1').textContent = fmtE(zinseS);
+  document.getElementById('db-r2').textContent = '−' + fmtE(gkmKosten);
+  document.getElementById('db-r3').textContent = fmtE(kondA);
+  document.getElementById('db-r4').textContent = '+' + fmtE(gkmErloeH);
+  document.getElementById('db-r5').textContent = '−' + fmtE(zinsH);
+  document.getElementById('db-r6').textContent = fmtE(kondP);
+  document.getElementById('db-r7').textContent = '+' + fmtE(gebuehren);
+  const db1El = document.getElementById('db-r8');
+  db1El.textContent = fmtE(db1); db1El.className = 'val ' + (db1 >= 0 ? 'good' : 'bad');
+  document.getElementById('db-r9').textContent = '−' + fmtE(rikoKosten);
+  const db2El = document.getElementById('db-r10');
+  db2El.textContent = fmtE(db2); db2El.className = 'val ' + (db2 >= 0 ? 'good' : 'bad');
+  document.getElementById('db-r11').textContent = '−' + fmtE(sek);
+  const db3El = document.getElementById('db-r12');
+  db3El.textContent = fmtE(db3);
+  db3El.style.color = db3 >= 0 ? 'var(--green)' : 'var(--red)';
+
+  document.getElementById('db-result').classList.add('show');
+  addXP(15);
+}
+
+// ══════════════════════════════════════════════
+// QUIZ
+// ══════════════════════════════════════════════
+const questions = [
+  // ── GBK & SCHEMA ──
+  { topic: "GBK Grundlagen", q: "Was ist das Ziel der Gesamtbetriebskalkulation?", opts: ["Den Jahresüberschuss ermitteln", "Kosten und Erlöse gegenüberstellen und das Betriebsergebnis ermitteln", "Die Bilanzsumme berechnen", "Den Cashflow ermitteln"], correct: 1, explain: "Die GBK stellt alle angefallenen Kosten und Erlöse gegenüber und ermittelt das Betriebsergebnis – nicht den Jahresüberschuss!" },
+  { topic: "GBK Grundlagen", q: "Warum sagt der Jahresüberschuss nicht alles über die Ertragslage einer Bank aus?", opts: ["Weil er zu groß ist", "Weil er neutrale Erträge/Aufwendungen enthält und das Betriebsergebnis aussagekräftiger ist", "Weil er nicht geprüft wird", "Weil er keine Steuern enthält"], correct: 1, explain: "Der Jahresüberschuss enthält neutrale Posten. Das Betriebsergebnis zeigt den echten betrieblichen Erfolg." },
+  { topic: "GBK Schema", q: "Was ergibt sich aus: ZÜ + PrÜ − VA?", opts: ["Betriebsergebnis", "Teilbetriebsergebnis (TBE)", "Nettogewinnspanne", "Jahresüberschuss"], correct: 1, explain: "TBE = ZÜ + PrÜ − VA. Das ist der klassische Bankerfolg." },
+  { topic: "GBK Schema", q: "In welcher Reihenfolge wird das Betriebsergebnis berechnet?", opts: ["ZÜ -> PrÜ -> VA -> TBE -> Bewertung -> BE", "VA -> ZÜ -> TBE -> PrÜ -> BE", "TBE -> ZÜ -> BE -> PrÜ", "Jahresüberschuss − Steuern = BE"], correct: 0, explain: "Richtig: ZÜ + PrÜ − VA = TBE. TBE +/− Handelsergebnis +/− Sonstige +/− Bewertung = BE." },
+  { topic: "GBK Schema", q: "Was gehört alles zum Verwaltungsaufwand (VA)?", opts: ["Nur Personalaufwand", "Personalaufwand + andere VA + Abschreibungen Sachanlagen", "Provisionsaufwendungen + Zinsaufwendungen", "Bewertungsabschreibungen + Rückstellungen"], correct: 1, explain: "VA = Personalaufwand + andere Verwaltungsaufwendungen + Abschreibungen auf Sachanlagen" },
+  { topic: "GBK Schema", q: "Das Bewertungsergebnis in der GBK umfasst:", opts: ["Provisionsaufwand", "Abschreibungen auf Forderungen und Wertpapiere sowie Zuführungen zu Rückstellungen im Kreditgeschäft", "Personalaufwand", "Handelsergebnis"], correct: 1, explain: "Bewertungsergebnis = Risikovorsorge: Abschreibungen auf Forderungen und Zuführungen zu Rückstellungen im Kreditgeschäft." },
+  // ── SPANNEN ──
+  { topic: "Spannen", q: "Wie lautet die Formel für die Bruttozinsspanne?", opts: ["Zinsaufwand ÷ Bilanzsumme × 100", "Zinsüberschuss ÷ Geschäftsvolumen × 100", "Jahresüberschuss ÷ Eigenkapital × 100", "Provisionserträge ÷ Bilanzsumme × 100"], correct: 1, explain: "BZS = Zinsüberschuss × 100 ÷ Geschäftsvolumen" },
+  { topic: "Spannen", q: "Wie setzt sich der Zinsüberschuss (ZÜ) zusammen?", opts: ["ZE − ZA", "ZE + laufende Erträge aus Aktien/Beteil. − ZA", "Provisionserträge − Provisionsaufwendungen", "Personalaufwand + andere Verwaltungsaufwendungen"], correct: 1, explain: "ZÜ = Zinserträge + laufende Erträge aus Aktien und Beteiligungen − Zinsaufwendungen" },
+  { topic: "Spannen", q: "Was bedeutet GV in der Spannen-Formel?", opts: ["Gewinnvortrag", "Geschäftsvolumen = Bilanzsumme + Eventualverbindlichkeiten", "Gesamtvermögen", "Grundkapital und Verbindlichkeiten"], correct: 1, explain: "GV = Geschäftsvolumen = Bilanzsumme + Eventualverbindlichkeiten. Basis für alle Spannenberechnungen!" },
+  { topic: "Spannen – Rechnen", q: "ZÜ = 103.600 TEUR, GV = 6.464.700 TEUR. Welche BZS ergibt sich (auf 3 NKS)?", opts: ["1,504 %", "1,603 %", "2,100 %", "0,960 %"], correct: 1, explain: "BZS = 103.600 × 100 ÷ 6.464.700 = 1,603 %. Das ist die Lösung der Neckarbank-Aufgabe!" },
+  { topic: "Spannen – Rechnen", q: "PrÜ = 28.500 TEUR, GV = 6.464.700 TEUR. Welche Provisionsspanne ergibt sich?", opts: ["0,550 %", "0,441 %", "0,350 %", "1,100 %"], correct: 1, explain: "PrS = 28.500 × 100 ÷ 6.464.700 = 0,441 % – deutlich unter dem Branchenschnitt von 0,95 %!" },
+  { topic: "Spannen – Rechnen", q: "Die Neckarbank hat BZS 1,603%. Die Branche hat 1,40%. Um wie viele %-Punkte weicht die Bank ab?", opts: ["0,203 %-P. über Branche", "0,203 %-P. unter Branche", "0,403 %-P. über Branche", "identisch mit Branche"], correct: 0, explain: "1,603 % − 1,40 % = +0,203 %-Punkte -> Die Neckarbank liegt über dem Branchenschnitt beim ZÜ!" },
+  { topic: "Spannen – Rechnen", q: "VA = 91.100 TEUR, GV = 6.464.700 TEUR. Welche Bruttobedarfsspanne (BBS) ergibt sich?", opts: ["1,200 %", "1,409 %", "1,603 %", "0,900 %"], correct: 1, explain: "BBS = 91.100 × 100 ÷ 6.464.700 = 1,409 %" },
+  // ── PREISGRENZEN ──
+  { topic: "Preisgrenzen", q: "Was ist die Preisuntergrenze im Aktivgeschäft?", opts: ["Der maximal mögliche Kundenzinssatz", "Der mindeste Kundenzinssatz der alle Kosten deckt (kein Gewinn)", "Der Gewinnmaximierungspunkt", "Der GKM-Satz"], correct: 1, explain: "Preisuntergrenze = GKM + Risikokosten + SEK + Overheadkosten. Kein Gewinnaufschlag!" },
+  { topic: "Preisgrenzen", q: "Aus welchen Bestandteilen setzt sich die Preisuntergrenze zusammen?", opts: ["GKM + Gewinn + EK-Kosten", "GKM + Risikokosten + SEK + Overheadkosten (+EK-Kosten)", "Kundenzinssatz − GKM", "Provisionen + Verwaltungsaufwand"], correct: 1, explain: "PUG = GKM-Satz + Risikokostensatz + SEK + Overheadkostensatz (+ evtl. EK-Verzinsung)" },
+  { topic: "Preisgrenzen", q: "Wie berechnet sich die Preisobergrenze im PASSIVGESCHÄFT?", opts: ["GKM + SEK + Risikokosten", "GKM − SEK (− Overhead) = Maximaler Kundenzinssatz für Einlagen", "Kundenzins + Gewinn", "Bilanzsumme × GKM"], correct: 1, explain: "POG Passiv = GKM − SEK (− Overhead). Mehr kann die Bank nicht zahlen ohne Verlust zu machen." },
+  { topic: "Preisgrenzen – Rechnen", q: "GKM = 3,20%, Risko = 0,75%, SEK = 2,75%, Overhead = 60%×SEK = 1,65%, EK = 1,00%. Wie hoch ist die PUG?", opts: ["8,35 %", "9,35 %", "7,70 %", "10,75 %"], correct: 1, explain: "PUG = 3,20 + 0,75 + 2,75 + 1,65 + 1,00 = 9,35 % p.a." },
+  { topic: "Preisgrenzen – Rechnen", q: "EK-Bedarf 8% auf 25.000 EUR, EK-Verzinsung 12,5%. Wie hoch sind die jährlichen EK-Kosten in EUR?", opts: ["200 EUR", "250 EUR", "312 EUR", "3.125 EUR"], correct: 1, explain: "EK-Betrag = 8% × 25.000 = 2.000 EUR. EK-Kosten = 2.000 × 12,5% = 250 EUR p.a." },
+  { topic: "Preisgrenzen – Rechnen", q: "SEK fix = 90 EUR auf 50.000 EUR für 90 Tage. Wie hoch ist der SEK-Satz in % p.a.?", opts: ["0,18 %", "0,730 %", "1,20 %", "0,45 %"], correct: 1, explain: "SEK% = 90 ÷ 50.000 × 100 × 365 ÷ 90 = 0,18% × 4,056 = 0,730% p.a." },
+  { topic: "Preisgrenzen", q: "Was sind Standardeinzelkosten (SEK)?", opts: ["Fixkosten der gesamten Bank", "Direkt dem Geschäft zurechenbare Kosten (z.B. Bearbeitungskosten)", "Gemeinkosten die verteilt werden", "Gehälter aller Mitarbeiter"], correct: 1, explain: "SEK = direkt zurechenbare Kosten wie Bearbeitung, Kontoführung, Revision." },
+  { topic: "Preisgrenzen", q: "Was sind Overheadkosten?", opts: ["Direkt zurechenbare Personalkosten", "Nicht direkt zurechenbare Gemeinkosten – werden als Zuschlag auf SEK verteilt", "Zinskosten für Eigenkapital", "Risikokosten für Kreditausfälle"], correct: 1, explain: "Overheadkosten entstehen in nicht marktorientierten Abteilungen (z.B. Geschäftsleitung) und werden als % der SEK aufgeschlagen." },
+  // ── DECKUNGSBEITRAG ──
+  { topic: "Deckungsbeitrag", q: "Was ist der Konditionsbeitrag (DB I)?", opts: ["Kundenzins − Risikokosten", "Kundenzins − GKM-Satz (Zinsmarge)", "Provisionserträge − SEK", "GKM − Overhead"], correct: 1, explain: "Konditionsbeitrag = Kundenzins − GKM-Satz. Zeigt die Zinsmarge des Kundengeschäfts." },
+  { topic: "Deckungsbeitrag", q: "Welche Reihenfolge hat die Deckungsbeitragsrechnung?", opts: ["DB I nach Risikokosten / DB II nach SEK / DB III nach Overhead", "DB I=Konditionsbeitrag / DB II nach Risikokosten / DB III nach SEK / DB IV nach Overhead", "DB I nach Overhead / DB II Reingewinn", "DB I nach allen Kosten"], correct: 1, explain: "DB I=Kond.beitrag, DB II=nach Risko, DB III=nach SEK, DB IV=nach Overhead (Marktergebnis)" },
+  { topic: "Deckungsbeitrag – Rechnen", q: "Kundenzins 4,90%, GKM-Satz 2,90%, Darlehensbetrag 80.000 EUR. Wie hoch ist der DB I p.a.?", opts: ["1.600 EUR", "3.920 EUR", "2.320 EUR", "6.400 EUR"], correct: 0, explain: "DB I = (4,90% − 2,90%) × 80.000 = 2,00% × 80.000 = 1.600 EUR p.a." },
+  { topic: "Deckungsbeitrag – Rechnen", q: "DB I = 1.600 EUR, Risikokosten = 0,30% × 80.000 = 240 EUR. Wie hoch ist DB II?", opts: ["1.840 EUR", "1.360 EUR", "1.600 EUR", "240 EUR"], correct: 1, explain: "DB II = DB I − Risikokosten = 1.600 − 240 = 1.360 EUR p.a." },
+  { topic: "Deckungsbeitrag – Rechnen", q: "Ø Soll-Volumen 63.000 EUR, Kundenzins 9%, GKM-Satz aktiv 2,8%. Wie hoch sind die Zinserträge aus dem Soll-Geschäft p.a.?", opts: ["1.764 EUR", "5.670 EUR", "3.906 EUR", "63.000 EUR"], correct: 1, explain: "Zinserträge = 63.000 × 9% = 5.670 EUR p.a. GKM-Kosten: 63.000 × 2,8% = 1.764 EUR. Kond.beitrag Aktiv = 3.906 EUR." },
+  { topic: "Deckungsbeitrag", q: "Wofür steht der GKM-Satz in der Bankkalkulation?", opts: ["Gesamtkosten-Management", "Geld- und Kapitalmarktsatz – interner Verrechnungssatz für Kapitalkosten", "Gewinn-Kontroll-Methode", "Grundkapital-Messung"], correct: 1, explain: "GKM = Geld- und Kapitalmarkt-Satz. Opportunitätszinssatz der Bank." },
+  { topic: "Deckungsbeitrag – Rechnen", q: "DB III = 2.383 EUR. Overhead = 800 EUR. Wie hoch ist DB IV (Marktergebnis)?", opts: ["3.183 EUR", "1.583 EUR", "2.383 EUR", "−800 EUR"], correct: 1, explain: "DB IV = DB III − Overheadkosten = 2.383 − 800 = 1.583 EUR p.a." },
+  // ── RATING ──
+  { topic: "Rating", q: "Was bedeutet Ratingklasse 1 bei der Rottweiler Bank AG?", opts: ["Höchstes Ausfallrisiko", "Niedrigstes Ausfallrisiko (Score 95-100)", "Kreditvergabe nur ausnahmsweise", "Kein Kredit möglich"], correct: 1, explain: "Klasse 1 = Score 95-100 = Ausfallwahrscheinlichkeit 0,08% -> bestes Rating, Risikokostensatz 0,10%" },
+  { topic: "Rating", q: "Welche Ratingklasse hat Score-Wert 60-74 bei der Rottweiler Bank?", opts: ["Klasse 1", "Klasse 4 (D)", "Klasse 8", "Klasse 13"], correct: 1, explain: "Score 60-74 = Ratingklasse 4 (D), Ausfallwahrscheinlichkeit 0,26%, Risikokostensatz 0,75%" },
+  { topic: "Rating", q: "Ab welchem Ratingklassen-Score wird laut Rottweiler Bank Kreditvergabe nur ausnahmsweise gewährt?", opts: ["Score 0-29 (Klasse 13)", "Score 30-50", "Score 50-60", "Score 60-70"], correct: 0, explain: "Score 0-29 = Ratingklasse 13 = Kreditvergabe nur in begründeten Ausnahmefällen!" },
+  // ── KONZERN & HOLDING ──
+  { topic: "Konzern", q: "Was unterscheidet einen Konzern von einer Holding?", opts: ["Konzern ist größer", "Konzern: mehrere Unternehmen zusammen. Holding: verwaltet nur Beteiligungen", "Es gibt keinen Unterschied", "Holding ist börsennotiert, Konzern nicht"], correct: 1, explain: "Konzern = Zusammenschluss unter einer Muttergesellschaft. Holding = Verwaltungsgesellschaft für Beteiligungen." },
+  { topic: "Konzern", q: "Was ist ein vertikaler Konzern?", opts: ["Verschiedene Branchen", "Gleiche Branche", "Verschiedene Produktionsstufen (Rohstoff -> Produktion -> Verkauf)", "Internationaler Zusammenschluss"], correct: 2, explain: "Vertikaler Konzern = verschiedene Produktionsstufen in einer Kette." },
+  { topic: "Konzern", q: "Was ist ein horizontaler Konzern?", opts: ["Verschiedene Produktionsstufen", "Zusammenschluss von Unternehmen der GLEICHEN Branche", "Verschiedene Branchen", "Nur Verwaltung von Beteiligungen"], correct: 1, explain: "Horizontaler Konzern = gleiche Branche. Beispiel: Mehrere Brauereien unter einer Muttergesellschaft." },
+  { topic: "Konzern", q: "Warum gründen Unternehmen Konzerne oder Holdings? (Mehrere Gründe – was FEHLT in dieser Liste?)", opts: ["Wachstum, Risikoverteilung, Steuervorteile, internationale Expansion", "Bessere Finanzierung, Risikoverteilung, Steuervorteile, Wachstum", "Alle genannten Gründe sind korrekt", "Nur Steuerersparnis ist der Grund"], correct: 2, explain: "Alle Gründe sind richtig: Wachstum, Risikoverteilung, Steuervorteile, bessere Finanzierung, internationale Expansion." },
+  { topic: "Konzern", q: "Was ist eine reine Holding im Unterschied zu einer Mischholding?", opts: ["Reine Holding: verwaltet nur Beteiligungen. Mischholding: betreibt auch eigene Geschäfte", "Reine Holding: betreibt auch eigene Geschäfte. Mischholding: nur Beteiligungen", "Kein Unterschied", "Reine Holding ist börsennotiert"], correct: 0, explain: "Reine Holding = nur Beteiligungen verwalten. Mischholding = Beteiligungen + eigene Geschäfte." },
+  // ── ELASTIZITÄT & NACHFRAGE ──
+  { topic: "Elastizität", q: "Was bedeutet eine Preiselastizität von 1,8?", opts: ["Unelastisch: Mengenänderung kleiner als Preisänderung", "Elastisch: Mengenänderung größer als Preisänderung", "Perfekt elastisch", "Vollkommen unelastisch"], correct: 1, explain: "Bei |e| > 1: elastische Nachfrage – 1% Preiserhöhung -> mehr als 1% Mengenabnahme." },
+  { topic: "Elastizität", q: "Preiselastizität = 0,6, Preis steigt. Was passiert mit dem Umsatz?", opts: ["Umsatz sinkt", "Umsatz steigt (unelastisch: Preiserhöhung erhöht Umsatz)", "Umsatz bleibt gleich", "Menge steigt"], correct: 1, explain: "Bei |e| < 1 (unelastisch): Preis steigt -> Menge sinkt wenig -> Umsatz steigt." },
+  { topic: "Elastizität", q: "Preiselastizität = 1,2, Preis steigt. Was passiert?", opts: ["Umsatz steigt", "Umsatz fällt (elastisch: Mengenrückgang überkompensiert Preiserhöhung)", "Umsatz bleibt gleich", "Keine Aussage möglich"], correct: 1, explain: "Bei |e| > 1: elastisch -> Preis steigt -> starker Mengenrückgang -> Umsatz sinkt." },
+  { topic: "Nachfrage", q: "Welcher Faktor verschiebt die Nachfragekurve NICHT (nur Bewegung entlang der Kurve)?", opts: ["Gestiegenes Einkommen", "Mehr Werbung", "Preisänderung des Gutes selbst", "Mehr Konsumenten"], correct: 2, explain: "Eine Preisänderung des Gutes selbst bewirkt nur eine Bewegung entlang der Nachfragekurve, keine Verschiebung!" },
+  { topic: "Nachfrage", q: "Einkommen der Konsumenten steigt. Was passiert mit der Nachfragekurve?", opts: ["Verschiebung nach links (weniger Nachfrage)", "Verschiebung nach rechts (mehr Nachfrage bei gleichem Preis)", "Keine Verschiebung", "Kurve wird flacher"], correct: 1, explain: "Mehr Einkommen = mehr Kaufkraft = höhere Nachfrage bei gleichem Preis = Rechtsverschiebung." },
+  // ── BÖRSE ──
+  { topic: "Börse", q: "Was ist eine Billigst-Order?", opts: ["Order mit dem niedrigsten Limit", "Kauforder ohne Preislimit – wird zum günstigsten verfügbaren Preis ausgeführt", "Order die storniert wird", "Verkaufsorder ohne Limit"], correct: 1, explain: "Billigst = Kauforder ohne Preisgrenze – zum niedrigsten verfügbaren Marktpreis." },
+  { topic: "Börse", q: "Was ist eine Bestens-Order?", opts: ["Kauforder mit maximalem Limit", "Verkaufsorder ohne Preislimit – zum höchsten verfügbaren Preis", "Order mit festem Preis", "Order die nie ausgeführt wird"], correct: 1, explain: "Bestens = Verkaufsorder ohne Preisgrenze – zum höchsten verfügbaren Marktpreis ausgeführt." },
+  { topic: "Börse – Rechnen", q: "Auktionshandel Xetra: Welcher Preis wird als Auktionspreis gewählt?", opts: ["Immer der niedrigste Preis", "Der Preis mit dem höchsten handelbaren Volumen (größte Übereinstimmung von Kauf und Verkauf)", "Immer der höchste Preis", "Mittelwert aller Limits"], correct: 1, explain: "Auktionspreis = Preis mit maximalem handelbaren Volumen, wo kumulierte Käufe ≥ kumulierte Verkäufe." },
+  // ── RISIKOKOSTENSATZ ──
+  { topic: "Risikokostensatz – Rechnen", q: "Abschreibungen 10 Jahre = 5.554.896 EUR, Ø Forderungsbestand = 52.700.000 EUR. Risikokostensatz p.a.?", opts: ["0,53 %", "1,054 %", "2,10 %", "10,54 %"], correct: 1, explain: "Ø Abschr. p.a. = 5.554.896 ÷ 10 = 555.489,60. Risikosatz = 555.490 ÷ 52.700.000 × 100 = 1,054 % p.a." },
+  { topic: "Risikokostensatz – Rechnen", q: "Abschreibungen p.a. = 324.000 EUR, Ø Forderungsbestand = 28.500.000 EUR. Risikokostensatz?", opts: ["0,57 %", "1,14 %", "2,28 %", "3,24 %"], correct: 1, explain: "324.000 ÷ 28.500.000 × 100 = 1,14 % p.a." },
+  // ── ROTTWEILER BANK PRÜFUNGSAUFGABEN ──
+  { topic: "Rottweiler Bank", q: "Im GJ der Rottweiler Bank AG stieg der Verwaltungsaufwand stark an. Was ist eine mögliche Ursache?", opts: ["Sinkende Zinsen", "Tariferhöhungen beim Personal + gestiegene andere Verwaltungsaufwendungen", "Höherer Jahresüberschuss", "Gesunkene Bilanzsumme"], correct: 1, explain: "Der VA stieg von 70.640 auf 80.390 TEUR. Hauptgrund: Tariferhöhungen Personalaufwand (46.060 -> 49.380) + andere VA (21.610 -> 27.580)." },
+  { topic: "Rottweiler Bank", q: "Was war der Hauptgrund dass das Betriebsergebnis der Rottweiler Bank AG im Geschäftsjahr schlechter war?", opts: ["Sinkende Provisionserträge", "Stark gestiegenes Bewertungsergebnis (Risikovorsorge stieg von −1.250 auf −7.460 TEUR)", "Gesunkene Bilanzsumme", "Ausgefallene Dividenden"], correct: 1, explain: "Das Bewertungsergebnis verschlechterte sich massiv: −1.250 -> −7.460 TEUR (= +6.210 TEUR mehr Abschreibungen/Rückstellungen)." },
+  // ── GEMISCHTE PRÜFUNGSFRAGEN ──
+  { topic: "Prüfungstraining", q: "Welche Spanne zeigt ob eine Bank ihren obersten Zweck (Erhaltung des Unternehmens) erfüllt?", opts: ["Bruttozinsspanne", "Provisionsspanne", "Nettogewinnspanne (Betriebsergebnis ÷ GV × 100)", "Bruttobedarfsspanne"], correct: 2, explain: "Die NGS = Betriebsergebnis ÷ GV × 100 zeigt ob das KI seinen Zweck erfüllt: die Erhaltung des Unternehmens." },
+  { topic: "Prüfungstraining", q: "Regio-Bank AG: BZS = 2,582%, PrS = 0,451%, BBS = 1,797%. Wie hoch ist die Bruttoertragsspanne (BES)?", opts: ["3,033 %", "1,236 %", "0,631 %", "4,830 %"], correct: 1, explain: "BES = BZS + PrS - BBS = 2,582 + 0,451 - 1,797 = 1,236%. Davon werden noch Sonstige und Bewertungsspanne abgezogen um die NGS (0,631%) zu erhalten." },
+  { topic: "Prüfungstraining", q: "Was bedeutet ein negatives Betriebsergebnis (Verlust) für eine Bank?", opts: ["Die Bank macht trotzdem Gewinn durch den Jahresüberschuss", "Die Bank deckt ihre betrieblichen Kosten nicht – langfristig existenzgefährdend", "Nichts, das passiert jeder Bank", "Nur Steuervorteil"], correct: 1, explain: "Negatives BE = betriebliche Kosten nicht gedeckt. Das ist langfristig gefährlich und muss dringend analysiert werden." },
+  { topic: "Prüfungstraining", q: "Welche Aussage zur Gesamtbetriebskalkulation ist FALSCH?", opts: ["Die GBK basiert auf GuV-Zahlen", "Neutrale Aufwendungen werden herausgerechnet", "Der Jahresüberschuss entspricht dem Betriebsergebnis", "Das Ergebnis ist das Betriebsergebnis (BE)"], correct: 2, explain: "FALSCH: Jahresüberschuss != Betriebsergebnis! Der JÜ enthält neutrale Posten (Steuern, außerordentliche Erträge). Das BE ist aussagekräftiger." },
+];
+
+let qIdx = 0, score = 0, answered = false, quizStarted = false;
+
+function initQuiz() {
+  quizStarted = true;
+  qIdx = 0;
+  score = 0;
+  shuffleArray(questions);
+  renderQuestion();
+}
+
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+
+function renderQuestion() {
+  answered = false;
+  const q = questions[qIdx];
+  document.getElementById('quiz-area').style.display = 'block';
+  document.getElementById('quiz-done').style.display = 'none';
+  document.getElementById('quiz-topic-label').textContent = '📚 ' + q.topic;
+  document.getElementById('quiz-q').textContent = q.q;
+  document.getElementById('quiz-prog').textContent = 'Frage ' + (qIdx + 1) + ' von ' + questions.length;
+  document.getElementById('quiz-next-btn').style.display = 'none';
+
+  const fb = document.getElementById('quiz-fb');
+  fb.className = 'quiz-feedback';
+  fb.textContent = '';
+
+  const opts = document.getElementById('quiz-opts');
+  opts.innerHTML = '';
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-option';
+    btn.textContent = opt;
+    btn.onclick = () => answerQuestion(i);
+    opts.appendChild(btn);
+  });
+}
+
+function answerQuestion(idx) {
+  if (answered) return;
+  answered = true;
+  const q = questions[qIdx];
+  const opts = document.querySelectorAll('.quiz-option');
+  opts[q.correct].classList.add('correct');
+  if (idx !== q.correct) {
+    opts[idx].classList.add('wrong');
+  } else {
+    score++;
+    addXP(20);
+  }
+  const fb = document.getElementById('quiz-fb');
+  fb.className = 'quiz-feedback show ' + (idx === q.correct ? 'correct-fb' : 'wrong-fb');
+  fb.textContent = (idx === q.correct ? '✅ Richtig! ' : '❌ Falsch! ') + q.explain;
+  document.getElementById('quiz-next-btn').style.display = 'block';
+}
+
+function nextQuestion() {
+  qIdx++;
+  if (qIdx >= questions.length) {
+    showQuizDone();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showQuizDone() {
+  document.getElementById('quiz-area').style.display = 'none';
+  document.getElementById('quiz-done').style.display = 'block';
+  const pct = Math.round(score / questions.length * 100);
+  document.getElementById('quiz-score-display').textContent = score + ' / ' + questions.length;
+  let emoji = pct >= 80 ? '🏆 Ausgezeichnet!' : pct >= 60 ? '👍 Gut gemacht!' : '📚 Noch üben!';
+  document.getElementById('quiz-score-text').textContent = pct + '% – ' + emoji;
+  addXP(score * 5);
+}
+
+function restartQuiz() {
+  initQuiz();
+}
+
+// ══════════════════════════════════════════════
+// FLASHCARDS
+// ══════════════════════════════════════════════
+const flashcards = [
+  { q: "Was ist die Bruttozinsspanne (BZS)?", a: "BZS = Zinsüberschuss × 100 ÷ Geschäftsvolumen\nZeigt den Zinsertrag in % des GV. Branchenvergleich möglich." },
+  { q: "Wie berechne ich den Zinsüberschuss?", a: "ZÜ = Zinserträge + laufende Erträge aus Aktien/Beteiligungen − Zinsaufwendungen" },
+  { q: "Was ist das Geschäftsvolumen?", a: "GV = Bilanzsumme + Eventualverbindlichkeiten\nBasis für alle Spannenberechnungen!" },
+  { q: "Was ist der Unterschied zwischen TBE und BE?", a: "TBE = ZÜ + PrÜ − VA (klassischer Bankerfolg)\nBE = TBE +/− Handels- +/− Sonstige +/− Bewertungsergebnis" },
+  { q: "Was versteht man unter Standardeinzelkosten (SEK)?", a: "Direkt einem Geschäft zurechenbare Kosten (z.B. Kontoführung, Bearbeitung, Revision). Gegenteil: Overheadkosten." },
+  { q: "Formel: Preisuntergrenze Aktivgeschäft", a: "PUG = GKM-Satz + Risikokostensatz + SEK + Overheadkostensatz\n(+ EK-Verzinsung falls EK eingesetzt)" },
+  { q: "Was bedeutet GKM-Satz?", a: "Geld- und Kapitalmarktsatz = interner Verrechnungssatz.\nAlternativzins: was die Bank alternativ am Markt verdienen/zahlen würde." },
+  { q: "DB I, II, III, IV – was ist was?", a: "DB I = Konditionsbeitrag (KZ − GKM)\nDB II = DB I − Risikokosten\nDB III = DB II − SEK\nDB IV = DB III − Overheadkosten (Marktergebnis)" },
+  { q: "Preiselastizität: Was passiert bei |e| > 1?", a: "Elastische Nachfrage: Preiserhöhung führt zu starkem Mengenrückgang. Umsatz sinkt bei Preiserhöhung." },
+  { q: "Was ist eine Holding?", a: "Unternehmen das Beteiligungen an anderen Firmen verwaltet und kontrolliert.\nReine Holding: nur Beteiligungen\nMischholding: + eigene Geschäfte" },
+  { q: "Neckarbank: Zinsüberschuss berechnen", a: "ZÜ = 258.300 + 66.300 + 7.600 − 228.600 = 103.600 TEUR\nBZS = 103.600 / 6.464.700 × 100 = 1,603%" },
+  { q: "Was ist die Nettogewinnspanne?", a: "NGS = Betriebsergebnis × 100 ÷ Geschäftsvolumen\nZeigt ob das KI seinen Zweck erfüllt: Erhaltung des Unternehmens." },
+  { q: "Was sind Overheadkosten?", a: "Gemeinkosten die nicht direkt zurechenbar sind (z.B. Geschäftsleitung, IT-Verwaltung).\nWerden als Zuschlag auf SEK verrechnet." },
+  { q: "Was ist ein horizontaler Konzern?", a: "Zusammenschluss von Unternehmen der gleichen Branche.\nBeispiel: Mehrere Brauereien unter einer Muttergesellschaft." },
+  { q: "Was ist eine Billigst-Order an der Börse?", a: "Kauforder ohne Preislimit – wird zum niedrigsten verfügbaren Preis ausgeführt.\nGegenteil: Bestens-Order (Verkauf ohne Limit)." },
+  { q: "Wie berechnet man den Risikokostensatz?", a: "Risikokostensatz = Ø Abschreibungen p.a. ÷ Ø Forderungsbestand × 100\nBeispiel Nagoldbank: 555.490 ÷ 52.700.000 × 100 ≈ 1,054%" },
+  { q: "Was zeigt die Provisionsspanne?", a: "PrS = Provisionsüberschuss × 100 ÷ GV\nZeigt den Anteil des Provisionsgeschäfts am Gesamtgeschäft.\nNeckarbank: 0,441% vs Branche 0,95% → deutlich schlechter!" },
+  { q: "Konditionsbeitrag Aktivgeschäft – Formel?", a: "Kundenzinssatz − GKM-Satz = Konditionsbeitrag\nPositiv wenn Kundenzins > GKM (was bei Kredit normal sein muss)" },
+  { q: "Was ist die Bruttobedarfsspanne?", a: "BBS = Verwaltungsaufwand × 100 ÷ GV\nZeigt wie viel % des GV für die Verwaltung verbraucht wird." },
+  { q: "Rottweiler Bank: Warum sank das BE?", a: "Hauptgründe: Bewertungsergebnis stieg von −1.250 auf −7.460 TEUR (höhere Risikovorsorge) + Verwaltungsaufwand stieg um ca. 9.750 TEUR" },
+];
+
+let fcIdx = 0;
+let fcOrder = [...Array(flashcards.length).keys()];
+
+function renderFlashcard() {
+  const card = flashcards[fcOrder[fcIdx]];
+  document.getElementById('fc-q').textContent = card.q;
+  document.getElementById('fc-a').textContent = card.a;
+  document.getElementById('fc-count').textContent = (fcIdx + 1) + ' / ' + flashcards.length;
+  document.getElementById('fc-scene').classList.remove('flipped');
+}
+
+function flipCard() {
+  document.getElementById('fc-scene').classList.toggle('flipped');
+  addXP(2);
+}
+
+function nextCard() {
+  fcIdx = (fcIdx + 1) % flashcards.length;
+  renderFlashcard();
+}
+
+function prevCard() {
+  fcIdx = (fcIdx - 1 + flashcards.length) % flashcards.length;
+  renderFlashcard();
+}
+
+function shuffleCards() {
+  for (let i = fcOrder.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [fcOrder[i], fcOrder[j]] = [fcOrder[j], fcOrder[i]];
+  }
+  fcIdx = 0;
+  renderFlashcard();
+  addXP(5);
+}
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+// ══════════════════════════════════════════════
+// RECHENAUFGABEN – CHECK FUNCTIONS
+// ══════════════════════════════════════════════
+function showFeedback(id, correct, msg) {
+  const el = document.getElementById(id + '-feedback');
+  const styleOk = 'background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);color:#10b981';
+  const styleErr = 'background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#fca5a5';
+  const icon = correct ? 'Richtig! ' : 'Falsch! ';
+  el.innerHTML = '<div style="border-radius:10px;padding:14px 18px;margin:8px 0;font-size:13.5px;line-height:1.6;' + (correct ? styleOk : styleErr) + '">' + (correct ? '✅ ' : '❌ ') + icon + msg + '</div>';
+  document.getElementById(id + '-solution').style.display = 'block';
+  if (correct) addXP(25);
+}
+
+function checkRA1() {
+  var v = parseFloat(document.getElementById('ra1-input-zue').value);
+  var correct = Math.abs(v - 64200) < 50;
+  var msg = correct ? 'ZÜ = 64.200 TEUR. Lösung unten ansehen!' : 'Deine Eingabe: ' + v + ' TEUR. Richtig: 64.200 TEUR. Formel: (145.200+12.800)+4.500-98.300';
+  showFeedback('ra1', correct, msg);
+}
+function checkRA2() {
+  var v = parseFloat(document.getElementById('ra2-ngs').value);
+  var correct = Math.abs(v - (-0.010)) < 0.005;
+  var msg = correct ? 'NGS = -0,010 %. BE ist negativ!' : 'Deine Eingabe: ' + v + '%. Richtig: -0,010 %. BE = -800 TEUR!';
+  showFeedback('ra2', correct, msg);
+}
+function checkRA3() {
+  var v = parseFloat(document.getElementById('ra3-input').value);
+  var correct = Math.abs(v - 9.35) < 0.05;
+  var msg = correct ? 'PUG = 9,35 % p.a. Super!' : 'Deine Eingabe: ' + v + '%. Richtig: 9,35 % p.a. (3,20+0,75+2,75+1,65+1,00)';
+  showFeedback('ra3', correct, msg);
+}
+function checkRA4() {
+  var v = parseFloat(document.getElementById('ra4-input').value);
+  var correct = Math.abs(v - (-954)) < 10;
+  var msg = correct ? 'DB IV = -954 EUR. Das Geschäft lohnt sich NICHT!' : 'Deine Eingabe: ' + v + ' EUR. Richtig: -954 EUR p.a. Das Darlehen ist unrentabel!';
+  showFeedback('ra4', correct, msg);
+}
+function checkRA5() {
+  var r = parseFloat(document.getElementById('ra5-risko').value);
+  var d = parseFloat(document.getElementById('ra5-db3').value);
+  var rOk = Math.abs(r - 1.14) < 0.05;
+  var dOk = Math.abs(d - 1221) < 15;
+  var correct = rOk && dOk;
+  var msg = correct ? 'Beides korrekt! Risikosatz = 1,14%, DB III = 1.221 EUR' : 'Risikosatz: ' + r + '% (Richtig: 1,14%) | DB III: ' + d + ' EUR (Richtig: 1.221 EUR)';
+  showFeedback('ra5', correct, msg);
+}
+function checkRA6() {
+  var v = parseFloat(document.getElementById('ra6-input').value);
+  var correct = Math.abs(v - 1.194) < 0.005;
+  var msg = correct ? 'PrS = 1,194 % – über Branchendurchschnitt 1,15 %' : 'Deine Eingabe: ' + v + '%. Richtig: 1,194 %. PrÜ = 49.200 / 4.120.000 * 100';
+  showFeedback('ra6', correct, msg);
+}
+function checkRA7() {
+  var v = parseFloat(document.getElementById('ra7-input').value);
+  var correct = Math.abs(v - 3.348) < 0.01;
+  var msg = correct ? 'POG = 3,348 % p.a.' : 'Deine Eingabe: ' + v + '%. Richtig: 3,348 %. SEK% = 60/80.000*100*365/180 = 0,152%';
+  showFeedback('ra7', correct, msg);
+}
+function checkRA8() {
+  var gj = parseFloat(document.getElementById('ra8-gj').value);
+  var vj = parseFloat(document.getElementById('ra8-vj').value);
+  var gjOk = Math.abs(gj - 0.681) < 0.01;
+  var vjOk = Math.abs(vj - 1.169) < 0.01;
+  var correct = gjOk && vjOk;
+  var msg = correct ? 'GJ: 0,681% | VJ: 1,169% Grosser Rueckgang!' : 'GJ: ' + gj + '% (Richtig: 0,681%) | VJ: ' + vj + '% (Richtig: 1,169%)';
+  showFeedback('ra8', correct, msg);
+}
+function checkRA9() {
+  var v = parseFloat(document.getElementById('ra9-input').value);
+  var correct = Math.abs(v - 1.082) < 0.05;
+  var msg = correct ? 'Max. Kundenzinssatz ca. 1,082 % p.a.' : 'Deine Eingabe: ' + v + '%. Richtig: 1,082 %. SEK% = 0,730%, Overhead = 0,438%';
+  showFeedback('ra9', correct, msg);
+}
+function checkRA10() {
+  var v = parseFloat(document.getElementById('ra10-be').value);
+  var correct = Math.abs(v - (-4200)) < 100;
+  var msg = correct ? 'BE = -4.200 TEUR - Verlust! Super erkannt!' : 'Deine Eingabe: ' + v + ' TEUR. Richtig: -4.200 TEUR. Personalaufwand = Loehne+Soziales beachten!';
+  showFeedback('ra10', correct, msg);
+}
+
+function filterRA(cat) {
+  document.querySelectorAll('.ra-card').forEach(c => {
+    if (cat === 'alle' || c.dataset.cat === cat) {
+      c.style.display = 'block';
+    } else {
+      c.style.display = 'none';
+    }
+  });
+  ['alle','gbk','preis','db'].forEach(b => {
+    const btn = document.getElementById('ra-btn-' + b);
+    if (btn) btn.className = b === cat ? 'btn' : 'btn btn-secondary';
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  showPage('home');
+  var starsEl = document.getElementById('stars');
+  var starHTML = '';
+  for (var i = 0; i < 80; i++) {
+    var x = Math.random() * 100;
+    var y = Math.random() * 100;
+    var size = Math.random() * 2 + 0.5;
+    var opacity = Math.random() * 0.4 + 0.1;
+    starHTML += '<div style="position:absolute;left:' + x.toFixed(1) + '%;top:' + y.toFixed(1) + '%;width:' + size.toFixed(1) + 'px;height:' + size.toFixed(1) + 'px;background:rgba(255,255,255,' + opacity.toFixed(2) + ');border-radius:50%;"></div>';
+  }
+  starsEl.innerHTML = starHTML;
+});
+</script>
+</body>
+</html>
